@@ -1,0 +1,98 @@
+  # debug mode
+  debug: True
+  seed: 42
+
+  # # layer names to wrap
+  # layer_classes: List[str] = field(
+  #   default_factory=lambda: ["TransformerBlock"])
+
+  # activation / gradient checkpointing & offloading
+  enabled_act_ckpt: True
+  enabled_act_offload: False
+
+  # parameter offloading
+  enabled_param_offload: False
+
+  # mixed precision
+  param_dtype: "bfloat16"
+  reduce_dtype: "bfloat16"
+  buffer_dtype: "bfloat16"
+  low_precision_grad: True
+
+  # sharding
+  sharding_policy: "optimizer"
+
+  # distributed training
+  enabled_fsdp: True
+  enabled_ddp: False
+
+  # checkpointing
+  save_interval: 128
+
+  # save path
+  save_path: null
+
+  # logging
+  log_interval: 4
+  save_per_token_loss: False
+
+  # evaluation
+  eval_interval: 64
+
+  # checkpointing
+  ckpt_dir: "checkpoints"
+
+  # wandb
+  wandb: False
+  wandb_key: REMOVED # REMOVED # ted
+  wandb_experiment_name: "13B_l4_mix+codegen_720"
+
+  # scaler
+  scaler_init_scale: 65536 # 2 ** 16  
+  scaler_backoff_factor: 0.5
+  scaler_growth_factor: 2.0
+  scaler_growth_interval: 2000
+
+  # gradient clipping & optimization
+  num_training_tokens: 720_000_000 # Prev: 60M
+  ref_batch_size: 2
+  gpu_batch_size: 1 
+  clip_grad_norm: 1.0
+  warm_up: 0.02
+
+  # loss protection policy
+  skip_malformed_batches: True
+  malformed_batch_ppl_threshold: 32.0
+
+  soften_loss_spikes: True
+  apply_per_token_softening: False
+  loss_spike_threshold: 1.5
+  loss_spike_factor: 0.7
+
+  malformed_batch_loss_threshold: 5
+  
+
+  # resume checkpoint
+  resume_ckpt: null #"./checkpoints/dataset_r_a_fft/000229"
+  resume_training: False
+
+  # optimizer config
+  # TODO: this is rather dynnamic, maybe best to leave like this?
+  optimizer_config_path: "configs/optimizers/adamw_base_fft.json"
+
+  # dataset config
+  # TODO: this is rather dynnamic, maybe best to leave like this?
+  dataset_config_path: "configs/datasets/seed_dataset.json"
+
+  # test dataset config
+  test_dataset_config_path: "configs/datasets/seed_benchmark.json"
+  test_batch_size: 1
+
+  # model config 
+  # TODO: this is rather dynnamic, maybe best to leave like this?
+  model_config_path: "configs/models/default_conf.json"
+
+  # adapter config
+  # TODO: this is rather dynnamic, maybe best to leave like this?
+  adapter_config_path: "configs/adapters/lora-4.json"
+

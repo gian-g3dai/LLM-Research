@@ -1,0 +1,13 @@
+{
+  "model": {
+    "type": "llama",
+    "args": {
+      "base": "code-llama-13b-instruct"
+    }
+  },
+  "tokenizer": {
+    "type": "llama",
+    "path": "/mnt/raid0/llamas/codellama/CodeLlama-13b-Instruct/tokenizer_with_rev.model"
+  }
+}
+

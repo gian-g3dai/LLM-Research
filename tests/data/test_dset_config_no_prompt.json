@@ -1,0 +1,35 @@
+{
+    "max_length": 1024,
+    "max_tokens_as_prompt": 0,
+    "multisample": false,
+    "infinite": false,
+    "datasources": [
+        {
+            "datasource_type": "CSharpFilesDatasource",
+            "root": "/home/ted/datasets/games_scraped",
+            "globbing_method": "all",
+            "reformat_method": "no_reformat",
+            "percent_skip": 80,
+            "percent_use": 20,
+            "use_triple_backticks": false
+        },
+        {
+            "datasource_type": "GodotFilesDatasource",
+            "root": "/home/ted/datasets/godot_scraped",
+            "globbing_method": "all",
+            "reformat_method": "no_reformat",
+            "percent_skip": 80,
+            "percent_use": 20,
+            "use_triple_backticks": false
+        },
+        {
+            "datasource_type": "CppFilesDatasource",
+            "root": "/home/ted/datasets/unreal_scraped",
+            "globbing_method": "all",
+            "reformat_method": "no_reformat",
+            "percent_skip": 80,
+            "percent_use": 20,
+            "use_triple_backticks": false
+        }
+    ]
+}

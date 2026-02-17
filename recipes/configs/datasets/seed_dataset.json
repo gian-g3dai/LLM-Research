@@ -1,0 +1,204 @@
+{
+  "max_length": 16384,
+  "max_tokens_as_prompt": 16384,
+  "infinite": true,
+  "multisample": true,
+  "no_truncate_next": true,
+  "datasources_weights": [
+    7.5,
+    7.5,
+    7.5,
+    7.5,
+    10,
+    20,
+    1.5,
+    1.5,
+    1.5,
+    1.5
+  ],
+  "datasources": [
+    {
+      "datasource_type": "InstructDatasource",
+      "root": "/mnt/raid0/datasets/oasst",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "split": "train_fst2",
+      "reversed": false,
+      "prompt_template": {
+        "type": "InstructGenTemplate",
+        "base_prompt": "[INST] {instruction}\n{input} [/INST] ",
+        "kwargs": {
+          "instruction": ["Respond to the following question or prompt with information firmly grounded in verified sources, avoiding speculation or subjective content. Ensure your answers are based on established facts accepted widely within relevant disciplines.",
+                          "Craft your response to the following question or prompt using information derived from well-verified sources. Steer clear of speculative or subjective content, and ensure your answers are firmly rooted in widely accepted facts across relevant disciplines.",
+                          "Provide a response to the given question or prompt rooted in verified information. Avoid speculative or subjective content, and ensure that your answers rely exclusively on well-verified facts accepted across pertinent disciplines.",
+                          "When responding to the following question or prompt, rely solely on information from well-verified sources. Refrain from speculative or subjective content, and ensure your answers are based on widely accepted facts within relevant disciplines.",
+                          "Generate a response to the provided question or prompt using information from reliable sources. Avoid speculative or subjective content, and ensure your answers are firmly based on widely accepted facts in relevant disciplines.",
+                          "Respond to the forthcoming question or prompt by drawing exclusively from well-verified information. Steer clear of speculative or subjective content, and ensure your answers are rooted in established facts accepted across pertinent disciplines.",
+                          "When addressing the following question or prompt, ensure your response is built on verified information. Avoid speculative or subjective content, and ensure your answers are firmly grounded in well-accepted facts within relevant disciplines.",
+                          "Provide a response to the upcoming question or prompt that is solely based on well-verified information. Avoid speculative or subjective content, and make sure your answers are firmly rooted in established facts widely accepted across pertinent disciplines.",
+                          "Respond to the forthcoming question or prompt using information from reputable sources. Avoid speculative or subjective content, and ensure your answers are firmly based on widely accepted facts in relevant disciplines.",
+                          "When generating your response to the following question or prompt, make sure it is based on information from verified sources. Steer clear of speculative or subjective content, and ensure your answers are firmly grounded in established facts accepted across pertinent disciplines."]
+        }
+      }
+    },
+    {
+      "datasource_type": "InstructDatasource",
+      "root": "/mnt/raid0/datasets/oasst",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "split": "train_fst2",
+      "reversed": true,
+      "prompt_template": {
+        "type": "InstructGenTemplate",
+        "base_prompt": "[INST] {instruction}\n{input} [/INST] ",
+        "kwargs": {
+          "instruction": ["Craft a query or statement designed to elicit the given response, taking into account the context and desired information. Ensure the question is precise, pertinent, and appropriately constructed to garner a substantial and informative reply.",
+                          "Generate a question or prompt that is anticipated to elicit the provided response. Consider the context and the specific information you aim to gather. Ensure that the query is lucid, pertinent, and appropriately framed for a substantial and informative reply.",
+                          "Devise a query or prompt that is expected to prompt the provided response. Take into account the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately phrased to generate a meaningful and informative reply.",
+                          "Create a question or prompt that is likely to trigger the given response, considering the context and the specific information you intend to obtain. Make sure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                          "Construct a question or statement designed to provoke the provided response, considering the context and the kind of information you aim to extract. Ensure that the query is precise, relevant, and appropriately framed for a substantial and informative reply.",
+                          "Develop a query or prompt expected to draw out the provided response. Take into consideration the context and the specific information desired. Ensure the question is clear, relevant, and appropriately constructed for a meaningful and informative reply.",
+                          "Formulate a question or prompt that is likely to induce the provided response, considering the context and the type of information you want to elicit. Ensure that the question is clear, relevant, and appropriately framed to generate a meaningful and informative response.",
+                          "Create a question or prompt anticipated to generate the provided response. Take into account the context and the kind of information you're seeking. Ensure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                          "Generate a question or statement designed to extract the given response, considering the context and the specific information you intend to gather. Make sure the question is clear, relevant, and appropriately phrased for a substantial and informative reply.",
+                          "Devise a query or prompt that is expected to solicit the provided response. Take into consideration the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately constructed for a meaningful and informative reply."]
+        }
+      }
+    },
+    {
+      "datasource_type": "InstructDatasource",
+      "root": "/mnt/raid0/datasets/muffin",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "split": "train",
+      "reversed": false,
+      "prompt_template": {
+        "type": "InstructGenTemplate",
+        "base_prompt": "[INST] {instruction}\n{input} [/INST] ",
+        "kwargs": {
+          "instruction": ["Respond to the following question or prompt with information firmly grounded in verified sources, avoiding speculation or subjective content. Ensure your answers are based on established facts accepted widely within relevant disciplines.",
+                          "Craft your response to the following question or prompt using information derived from well-verified sources. Steer clear of speculative or subjective content, and ensure your answers are firmly rooted in widely accepted facts across relevant disciplines.",
+                          "Provide a response to the given question or prompt rooted in verified information. Avoid speculative or subjective content, and ensure that your answers rely exclusively on well-verified facts accepted across pertinent disciplines.",
+                          "When responding to the following question or prompt, rely solely on information from well-verified sources. Refrain from speculative or subjective content, and ensure your answers are based on widely accepted facts within relevant disciplines.",
+                          "Generate a response to the provided question or prompt using information from reliable sources. Avoid speculative or subjective content, and ensure your answers are firmly based on widely accepted facts in relevant disciplines.",
+                          "Respond to the forthcoming question or prompt by drawing exclusively from well-verified information. Steer clear of speculative or subjective content, and ensure your answers are rooted in established facts accepted across pertinent disciplines.",
+                          "When addressing the following question or prompt, ensure your response is built on verified information. Avoid speculative or subjective content, and ensure your answers are firmly grounded in well-accepted facts within relevant disciplines.",
+                          "Provide a response to the upcoming question or prompt that is solely based on well-verified information. Avoid speculative or subjective content, and make sure your answers are firmly rooted in established facts widely accepted across pertinent disciplines.",
+                          "Respond to the forthcoming question or prompt using information from reputable sources. Avoid speculative or subjective content, and ensure your answers are firmly based on widely accepted facts in relevant disciplines.",
+                          "When generating your response to the following question or prompt, make sure it is based on information from verified sources. Steer clear of speculative or subjective content, and ensure your answers are firmly grounded in established facts accepted across pertinent disciplines."]
+        }
+      }
+    },
+    {
+      "datasource_type": "InstructDatasource",
+      "root": "/mnt/raid0/datasets/muffin",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "split": "train",
+      "reversed": true,
+      "prompt_template": {
+        "type": "InstructGenTemplate",
+        "base_prompt": "[INST] {instruction}\n{input} [/INST] ",
+        "kwargs": {
+          "instruction": ["Craft a query or statement designed to elicit the given response, taking into account the context and desired information. Ensure the question is precise, pertinent, and appropriately constructed to garner a substantial and informative reply.",
+                          "Generate a question or prompt that is anticipated to elicit the provided response. Consider the context and the specific information you aim to gather. Ensure that the query is lucid, pertinent, and appropriately framed for a substantial and informative reply.",
+                          "Devise a query or prompt that is expected to prompt the provided response. Take into account the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately phrased to generate a meaningful and informative reply.",
+                          "Create a question or prompt that is likely to trigger the given response, considering the context and the specific information you intend to obtain. Make sure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                          "Construct a question or statement designed to provoke the provided response, considering the context and the kind of information you aim to extract. Ensure that the query is precise, relevant, and appropriately framed for a substantial and informative reply.",
+                          "Develop a query or prompt expected to draw out the provided response. Take into consideration the context and the specific information desired. Ensure the question is clear, relevant, and appropriately constructed for a meaningful and informative reply.",
+                          "Formulate a question or prompt that is likely to induce the provided response, considering the context and the type of information you want to elicit. Ensure that the question is clear, relevant, and appropriately framed to generate a meaningful and informative response.",
+                          "Create a question or prompt anticipated to generate the provided response. Take into account the context and the kind of information you're seeking. Ensure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                          "Generate a question or statement designed to extract the given response, considering the context and the specific information you intend to gather. Make sure the question is clear, relevant, and appropriately phrased for a substantial and informative reply.",
+                          "Devise a query or prompt that is expected to solicit the provided response. Take into consideration the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately constructed for a meaningful and informative reply."]
+        }
+      }
+    },
+    {
+      "datasource_type": "InstructCodeDatasource",
+      "root": "/mnt/raid0/datasets/code_contests",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "use_triple_backticks": true,
+      "solutions_per_problem": 1500,
+      "split": "train",
+      "reversed": false,
+      "prompt_template": {
+        "type": "InstructGenTemplate",
+        "base_prompt": "[INST] {instruction}\n{input} [/INST] ",
+        "kwargs": {
+          "instruction": ["Develop a {code_language} program that not only accomplishes the provided task efficiently but also adheres to industry best practices. Focus on writing clean, readable, and maintainable code. Ensure comprehensive commenting and documentation for clear understanding. Optimize algorithms and data structures for performance. Rigorously test the code for accuracy, considering potential edge cases and handling exceptions gracefully. Aim for code that exhibits both elegance and resilience, showcasing proficiency in {code_language}.",
+                          "Craft a {code_language} program that addresses the assigned task with an emphasis on code quality. Pay close attention to readability, maintainability, and scalability. Implement thorough comments and documentation to facilitate comprehension. Optimize algorithms and data structures for optimal performance. Conduct comprehensive testing, accounting for edge cases and error handling. Strive for code that is not only functional but also elegant and robust, showcasing your proficiency in {code_language}.",
+                          "In {code_language}, create a program that effectively addresses the provided task. It is crucial that your code is of high quality, adhering to best practices and industry standards. Focus on making it readable, maintainable, and scalable. Ensure that you incorporate comprehensive comments and documentation for better understanding. Optimize algorithms and data structures for efficiency. Rigorously test your code for correctness, considering potential edge cases and handling exceptions gracefully. Aim for code that is both elegant and robust, demonstrating proficiency in {code_language}.",
+                          "Develop a high-quality {code_language} program to accomplish the given task. Prioritize readability, maintainability, and scalability in your code. Include detailed comments and documentation for clear comprehension. Optimize algorithms and data structures for efficiency. Conduct rigorous testing to ensure accuracy, considering edge cases and error handling. Strive for code that is both elegant and resilient, showcasing your proficiency in {code_language}.",
+                          "Write a {code_language} program that effectively fulfills the provided task. It is imperative that your code meets high-quality standards, including readability, maintainability, and scalability. Implement comprehensive comments and documentation to enhance understanding. Optimize algorithms and data structures for efficient performance. Thoroughly test your code for correctness, accounting for potential edge cases and exception handling. Aim for code that is both elegant and robust, demonstrating your proficiency in {code_language}.",
+                          "Compose a {code_language} program that not only achieves the assigned objective but also meets stringent quality standards. Emphasize readability, maintainability, and scalability in your code. Include thorough comments and documentation for clear comprehension. Optimize algorithms and data structures for efficiency. Conduct comprehensive testing to ensure correctness, taking into account edge cases and exception handling. Strive for code that is both elegant and resilient, showcasing your proficiency in {code_language}.",
+                          "Produce a {code_language} program that effectively addresses the given task while adhering to high-quality coding practices. Prioritize readability, maintainability, and scalability. Include detailed comments and documentation for better comprehension. Optimize algorithms and data structures for efficient performance. Rigorously test your code for accuracy, considering potential edge cases and handling exceptions gracefully. Aim for code that is both elegant and robust, demonstrating your proficiency in {code_language}.",
+                          "Create a {code_language} program that effectively accomplishes the provided task. Ensure that your code is of high quality, emphasizing readability, maintainability, and scalability. Incorporate comprehensive comments and documentation for better understanding. Optimize algorithms and data structures for efficiency. Rigorously test your code for correctness, taking into account potential edge cases and exception handling. Strive for code that is both elegant and resilient, showcasing your proficiency in {code_language}.",
+                          "Develop a {code_language} program that addresses the given task with a strong focus on code quality. Pay attention to readability, maintainability, and scalability. Incorporate thorough comments and documentation for clarity. Optimize algorithms and data structures for performance. Conduct comprehensive testing, including consideration of edge cases and error handling. Strive for code that is not only functional but also elegant and robust, highlighting your proficiency in {code_language}.",
+                          "Craft a {code_language} program that effectively tackles the assigned task. It is crucial that your code meets high standards of quality, including readability, maintainability, and scalability. Incorporate detailed comments and documentation for clear understanding. Optimize algorithms and data structures for efficient performance. Rigorously test your code for correctness, taking into consideration potential edge cases and handling exceptions gracefully. Aim for code that is both elegant and robust, showcasing your proficiency in {code_language}."]
+        }
+      }
+    },
+    {
+      "datasource_type": "InstructCodeDatasource",
+      "root": "/mnt/raid0/datasets/code_contests",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "use_triple_backticks": true,
+      "solutions_per_problem": 1500,
+      "split": "train",
+      "reversed": true,
+      "prompt_template": {
+        "type": "InstructGenTemplate",
+        "base_prompt": "[INST] {instruction}\n{input} [/INST] ",
+        "kwargs": {
+          "instruction": ["Based on the code snippet provided, construct a detailed problem description inclusive of input specifications, expected output, constraints, and format guidelines.",
+                          "Derive a comprehensive problem statement from the given code, complete with input specifics, desired output, limitations, and data format specifications.",
+                          "Craft a thorough problem description, utilizing the provided code snippet as a guide. Ensure it encompasses input requirements, anticipated output, constraints, and data format instructions.",
+                          "From the provided code reference, generate a detailed problem scenario. This should encompass input particulars, desired output, any restrictions, and specifications for data format.",
+                          "Given the code snippet, formulate an extensive problem statement with specific input requirements, expected output, any constraints, and clear instructions for data format.",
+                          "Use the provided code as a reference to create a detailed problem description. This should include input specifications, expected output, any restrictions, and guidelines for data format.",
+                          "Construct a problem scenario based on the provided code snippet. Ensure it encompasses comprehensive input details, expected output, constraints, and instructions for data format.",
+                          "Generate a comprehensive problem description, referring to the provided code snippet. This should cover specific input requirements, expected output, any constraints, and format guidelines for data.",
+                          "Based on the code reference provided, develop a comprehensive problem statement. This should specify input details, desired output, any limitations, and guidelines for data format.",
+                          "Using the provided code as a foundation, compose a detailed problem description. Include specific input requirements, anticipated output, constraints, and clear instructions for data format."]
+        }
+      }
+    },
+    {
+      "datasource_type": "CSharpFilesDatasource",
+      "root": "/mnt/raid0/datasets/games_scraped",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "use_triple_backticks": true,
+      "reformat_method": "reformat",
+      "globbing_method": "all"
+    },
+    {
+      "datasource_type": "CSharpFilesDatasource",
+      "root": "/mnt/raid0/datasets/games",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "use_triple_backticks": true,
+      "reformat_method": "reformat",
+      "globbing_method": "all"  
+    },
+    {
+      "datasource_type": "CppFilesDatasource",
+      "root": "/mnt/raid0/datasets/unreal_scraped",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "use_triple_backticks": true,
+      "globbing_method": "all"
+    },
+    {
+      "datasource_type": "GodotFilesDatasource",
+      "root": "/mnt/raid0/datasets/godot_scraped",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "use_triple_backticks": true,
+      "globbing_method": "all"  
+    }
+  ]
+}
+

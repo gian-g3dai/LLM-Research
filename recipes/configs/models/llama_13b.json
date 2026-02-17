@@ -1,0 +1,6 @@
+{
+  "model_type": "llama",
+  "model_args": {
+    "base": "llama-13b"
+  }
+}

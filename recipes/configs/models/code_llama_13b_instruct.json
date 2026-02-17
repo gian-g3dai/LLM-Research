@@ -1,0 +1,6 @@
+{
+  "model_type": "llama",
+  "model_args": {
+    "base": "code-llama-13b-instruct"
+  }
+}

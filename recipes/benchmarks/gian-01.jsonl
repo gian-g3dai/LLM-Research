@@ -1,0 +1,106 @@
+{"task": "Create a basic Unity white button with the text \"button\" in it"}
+{"task": "Generate a simple canvas with a text label in Unity"}
+{"task": "Make a Unity image element"}
+{"task": "Create a button with a custom text label"}
+{"task": "Generate a toggle switch in Unity with the text \"active\" next to it"}
+{"task": "Make a simple progress bar with 5 segments"}
+{"task": "Create a Unity slider element"}
+{"task": "Generate a basic input field in Unity where the user can input text"}
+{"task": "Make a Unity dropdown menu"}
+{"task": "Create a button with an icon in Unity"}
+{"task": "Generate a basic scroll view in Unity"}
+{"task": "Make a Unity panel with a blue border"}
+{"task": "Create a Unity label with a colored background"}
+{"task": "Generate a Unity button with rounded corners that can be clicked"}
+{"task": "Make a Unity toggle switch with custom colors"}
+{"task": "Create a basic Unity progress bar with a fill effect"}
+{"task": "Generate a Unity slider with a custom thumb"}
+{"task": "Make a Unity input field with a placeholder"}
+{"task": "Create a Unity dropdown menu with custom options that can be defined by the user"}
+{"task": "Generate a Unity scroll view with scrollbars"}
+{"task": "Create a Unity button with a hover effect that changes its scale"}
+{"task": "Generate a Unity label with text that fades in and out"}
+{"task": "Make a Unity image element that rotates continuously"}
+{"task": "Create a Unity button with a clickable icon that disappears when clicked"}
+{"task": "Generate a toggle switch with custom on/off labels in Unity"}
+{"task": "Make a Unity progress bar that fills up gradually"}
+{"task": "Create a Unity slider with two handles for range selection"}
+{"task": "Generate a Unity input field with placeholder text and character limit"}
+{"task": "Make a Unity dropdown menu with predefined color options"}
+{"task": "Create a Unity scroll view with vertical scrolling"}
+{"task": "Create a simple UI script for a close button on a UI panel"}
+{"task": "Create a simple UI script for two buttons that can pause and resume the game"}
+{"task": "Create a UI script that displays a clock on the UI with a TextMeshPro Text component"}
+{"task": "Create a video player UI script with two buttons that can play/pause, mute/unmute a video player element"}
+{"task": "Create a Unity button that changes text and color when hovered over."}
+{"task": "Generate a draggable Unity panel."}
+{"task": "Make a Unity toggle switch with animated transitions."}
+{"task": "Create a Unity slider with tooltip values."}
+{"task": "Generate a Unity input field with validation."}
+{"task": "Make a Unity dropdown menu with nested options."}
+{"task": "Create a Unity scroll view with dynamically loaded content."}
+{"task": "Generate a Unity button that plays an animation on click."}
+{"task": "Create a Unity panel with resizable borders and an image in the center."}
+{"task": "Generate a Unity toggle group with multiple options."}
+{"task": "Make a Unity slider with custom step values."}
+{"task": "Create a Unity input field with a character limit that warns you when the limit is exceeded."}
+{"task": "Generate a Unity dropdown menu with search functionality."}
+{"task": "Make a Unity scroll view with pagination."}
+{"task": "Create a Unity button that triggers an event in code."}
+{"task": "Generate a Unity panel with a draggable title bar."}
+{"task": "Make a Unity toggle switch with sound effects when the toggle is selected."}
+{"task": "Create a Unity slider with a custom gradient fill."}
+{"task": "Generate a Unity input field with auto-complete."}
+{"task": "Make a Unity dropdown menu with multi-select option."}
+{"task": "Spawn a cube at a given location and spin it on a given axis with a UI slider to control the speed of rotation."}
+{"task": "Create a UI script with a color picker that can pick a color from the screen with a button."}
+{"task": "Create 3 RGB sliders to control the light color of the first light in the scene."}
+{"task": "Generate a Unity button that expands into a dropdown menu on click."}
+{"task": "Create a Unity panel with draggable and resizable corners."}
+{"task": "Make a Unity toggle switch that smoothly transitions between states."}
+{"task": "Generate a Unity slider with a visual representation of the selected value."}
+{"task": "Create a Unity input field with auto-suggestions based on user input."}
+{"task": "Make a Unity dropdown menu with dynamic loading from a JSON file."}
+{"task": "Generate a Unity scroll view with a parallax scrolling effect."}
+{"task": "Create a Unity button that spawns a draggable object on the canvas."}
+{"task": "Make a Unity panel with tabs for switching between different content."}
+{"task": "Generate a Unity toggle switch that changes the material of an object."}
+{"task": "Create a Unity button that follows a curved path when clicked."}
+{"task": "Generate a Unity panel with resizable, draggable, and collapsible sections."}
+{"task": "Make a Unity toggle switch with custom animations and transitions."}
+{"task": "Create a Unity slider that changes the 3D environment lighting in real-time."}
+{"task": "Generate a Unity input field with rich text support."}
+{"task": "Make a Unity dropdown menu that loads options asynchronously from a server."}
+{"task": "Create a Unity scroll view with dynamic content loading and infinite scrolling."}
+{"task": "Generate a Unity button with a particle system effect on click."}
+{"task": "Create a Unity panel with a 3D model embedded inside."}
+{"task": "Generate a Unity toggle group with interdependent options."}
+{"task": "Make a Unity slider with a real-time data visualization chart."}
+{"task": "Create a Unity input field that supports voice recognition."}
+{"task": "Generate a Unity dropdown menu with real-time search suggestions."}
+{"task": "Make a Unity scroll view with adaptive content loading based on user preferences."}
+{"task": "Create a Unity button that triggers a complex sequence of animations and actions."}
+{"task": "Generate a Unity panel with a resizable, draggable, and collapsible side toolbar."}
+{"task": "Make a Unity toggle switch that interacts with a physics simulation."}
+{"task": "Create a Unity slider that controls a complex AI behavior in the scene."}
+{"task": "Generate a Unity input field with natural language processing capabilities."}
+{"task": "Make a Unity dropdown menu with user-generated content and ratings."}
+{"task": "Generate a Unity panel with resizable and draggable sections containing 3D models."}
+{"task": "Make a Unity toggle switch that triggers a complex particle system."}
+{"task": "Create a Unity slider that controls the intensity of a global post-processing effect."}
+{"task": "Generate a Unity input field with handwriting recognition."}
+{"task": "Make a Unity dropdown menu that loads options dynamically from a web API."}
+{"task": "Create a Unity scroll view with dynamic loading and complex item recycling."}
+{"task": "Generate a Unity button that plays a cutscene when clicked."}
+{"task": "Make a Unity panel with a real-time 3D graph visualization."}
+{"task": "Create a Unity toggle switch that controls a physics-based puzzle element."}
+{"task": "Generate a Unity slider that adjusts the parameters of a procedural terrain generator."}
+{"task": "Make a Unity input field that accepts voice commands and triggers actions."}
+{"task": "Create a Unity dropdown menu that supports real-time collaboration and syncing."}
+{"task": "Generate a Unity scroll view with virtualization for handling a large number of items."}
+{"task": "Make a Unity button that triggers an AI-driven conversation system."}
+{"task": "Create a Unity panel with a customizable 3D holographic interface."}
+{"task": "Generate a Unity toggle switch that controls the behavior of a flocking AI system."}
+{"task": "Make a Unity slider that dynamically changes the weather conditions in a game world."}
+{"task": "Create a Unity input field that interprets gestures for navigation and interaction."}
+{"task": "Generate a Unity dropdown menu that loads options based on user preferences and behavior."}

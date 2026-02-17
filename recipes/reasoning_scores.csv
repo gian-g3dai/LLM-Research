@@ -1,0 +1,1274 @@
+description,code,reasoning_scores
+"This is a C# script for a Unity game. It creates a UI for pausing and resuming the game. The script has a number of fields and methods, including:
+
+Fields:
+
+_pauseButton: A Button component that will pause the game when clicked.
+_resumeButton: A Button component that will resume the game when clicked.
+_pauseText: A TextMeshProUGUI component that will display the current game state (playing or paused).
+PAUSE_TEXT: A constant string that represents the paused state.
+PLAYING_TEXT: A constant string that represents the playing state.
+generateUI: A boolean that determines whether the script should generate the UI.
+Methods:
+
+Start: Runs when the script is enabled. It checks whether generateUI is true and calls GenerateUI if necessary.
+GenerateUI: Creates the UI by adding a VerticalLayoutGroup component, adding a TextMeshProUGUI component to display the current game state, and creating two buttons (pause and resume) using the CreateButton method.
+CreateButton: Creates a new game object with a RectTransform and Button components, and adds a TextMeshProUGUI component with the given name.
+OnEnable: Adds listeners to the buttons and sets the default text.
+OnDisable: Removes listeners from the buttons.
+OnPauseButtonPress: Pauses the game by setting the timeScale to 0 and displaying the paused text.
+OnResumeButtonPress: Resumes the game by setting the timeScale to 1 and displaying the playing text. ","```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class PauseUI : MonoBehaviour
+{
+    [SerializeField]
+    Button _pauseButton;
+    [SerializeField]
+    Button _resumeButton;
+    [SerializeField]
+    TextMeshProUGUI _pauseText;
+    [SerializeField]
+    const string PAUSE_TEXT = ""PAUSED"";
+    [SerializeField]
+    const string PLAYING_TEXT = ""PLAYING"";
+
+    public bool generateUI = true;
+
+    private void Start()
+    {
+        if(generateUI)
+        {
+            GenerateUI();
+        }
+    }
+    /// <summary>
+    /// This function generates the UI
+    /// </summary>
+    private void GenerateUI()
+    {
+        // Adds a Vertical Layout Component to the main game object
+        var verticalLayout = gameObject.AddComponent<VerticalLayoutGroup>();
+        verticalLayout.spacing = 3;
+        // Controls child height and width
+        verticalLayout.childControlHeight = true;
+        verticalLayout.childControlWidth = true;
+
+        //Expand the children to match container size
+        verticalLayout.childForceExpandHeight = true;
+        verticalLayout.childForceExpandWidth = true;
+
+        // The empty gameobject to hold the text element
+        var textGO = new GameObject(""PauseUI Text"");
+        textGO.transform.SetParent(transform, false);
+        _pauseText = textGO.AddComponent<TextMeshProUGUI>();
+        _pauseText.text = PLAYING_TEXT;
+        _pauseText.enableAutoSizing = true;
+        _pauseText.color = Color.black;
+
+        // CREATE BUTTONS
+        _pauseButton = CreateButton(""PauseButton"");
+        _pauseButton.onClick.AddListener(OnPauseButtonPress);
+
+        _resumeButton = CreateButton(""ResumeButton"");
+        _resumeButton.onClick.AddListener(OnResumeButtonPress);
+    }
+
+    //This function creates the buttons
+    private Button CreateButton(string buttonName)
+    {
+        //Safe way to create UI objects in script
+        var buttonGO = new GameObject(buttonName);
+        buttonGO.transform.SetParent(transform, false);
+        buttonGO.AddComponent<RectTransform>();
+        var btn = buttonGO.AddComponent<Button>();
+
+        //Creates the image and sets the button target
+        var buttonImage = buttonGO.AddComponent<Image>();
+        btn.targetGraphic = buttonImage;
+
+        //Safe way to create UI objects in script
+        var textGO = new GameObject(buttonName + ""Text"");
+        textGO.transform.SetParent(buttonGO.transform, false);
+
+        //Create the text component with the given name, adjust size and sets the text color
+        var buttonText = textGO.AddComponent<TextMeshProUGUI>();
+        buttonText.text = buttonName;
+        buttonText.enableAutoSizing = true;
+        buttonText.color = Color.black;
+
+        return btn;
+    }
+
+    private void OnEnable()
+    {
+        // Add listeners to buttons
+        if(_pauseButton != null)
+        {
+            _pauseButton.onClick.AddListener(OnPauseButtonPress);
+        }
+        if(_resumeButton != null)
+        {
+            _resumeButton.onClick.AddListener(OnResumeButtonPress);
+        }
+
+        //Set the default text
+        if(_pauseText != null)
+        {
+            _pauseText.text = PLAYING_TEXT;
+        }
+    }
+
+    private void OnDisable()
+    {
+        //Remove listeners from the buttons
+        if(_pauseButton != null)
+        {
+            _pauseButton.onClick.RemoveAllListeners();
+        }
+        if(_resumeButton != null)
+        {
+            _resumeButton.onClick.RemoveAllListeners();
+        }
+    }
+
+    //Listener function for the Pause Button
+    private void OnPauseButtonPress()
+    {
+        Time.timeScale = 0f;
+        _pauseText.text = PAUSE_TEXT;
+    }
+
+
+    //Listener function for the Resume Button
+    private void OnResumeButtonPress()
+    {
+        Time.timeScale = 1f;
+        _pauseText.text = PLAYING_TEXT;
+    }
+}
+
+```","The code is well-organized and self-contained. It provides a clear, comprehensive response to the user's question. It is well-written, logical, easy to follow, and engages the user with expert knowledge in the area. It may also include highly relevant and insightful comments.
+
+Score: 5 "
+"This code is written in C# and is intended to be used in a Unity project. It defines a class called ""VideoPlayerUI"" that manages the user interface for a Unity VideoPlayer component. The class has several properties and methods that allow the user to customize the video player's behavior and appearance.
+
+The class has several properties, including a ""VideoPlayer"" property that references the Unity VideoPlayer component, a ""PlayerWidth"" and ""PlayerHeight"" property that define the size of the video player's screen, and a ""Clip"" property that defines the video clip to be played.
+
+The class also has several methods, including a ""GenerateUI"" method that creates the video player's user interface, a ""CreateButton"" method that creates buttons for the UI, and a ""SetButtonText"" method that changes the text of a particular button.
+
+The ""PlayPauseToggle"" method toggles the play/pause state of the video player, updates the button text, and sets a boolean variable to indicate the new state. The ""MuteToggle"" method does the same for the mute/unmute state of the video player.
+
+Overall, this code provides a simple and customizable way to manage the user interface for a Unity VideoPlayer component. ","```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Video;
+using TMPro;
+
+public class VideoPlayerUI : MonoBehaviour
+{
+    [Header(""Video Player"")]
+    [SerializeField]
+    private VideoPlayer _videoPlayer;
+    [SerializeField]
+    private int _playerWidth = 1280;
+    [SerializeField]
+    private int _playerHeight = 720;
+
+    [Header(""Generated Video Player Properties"")]
+    private GameObject _videoPlayerPanel;
+    private Material _videoMat;
+    private RenderTexture _videoPlayerTarget;
+    [SerializeField]
+    private VideoClip _clip;
+
+    [Header(""Play/Pause Button"")]
+    [SerializeField]
+    private Button _playPauseButton;
+    [SerializeField]
+    private string _playText = ""Play"";
+    [SerializeField]
+    private string _pauseText = ""Pause"";
+    [SerializeField]
+    private bool _paused = false;
+
+    [Header(""Mute/Unmute Button"")]
+    [SerializeField]
+    private Button _muteUnmuteButton;
+    [SerializeField]
+    private string _muteText = ""Mute"";
+    [SerializeField]
+    private string _unmuteText = ""Unmute"";
+    [SerializeField]
+    private bool _muted = false;
+
+    [SerializeField]
+    private bool _generateUI = true;
+
+
+
+    private void Start()
+    {
+        if(_generateUI)
+        {
+            GenerateUI();
+        }
+    }
+
+    //Function to generate the UI
+    private void GenerateUI()
+    {
+        if(_clip == null)
+        {
+            Debug.LogWarning(""No clip to play!"");
+        }
+
+        var verticalLayout = gameObject.AddComponent<VerticalLayoutGroup>();
+        verticalLayout.spacing = 3;
+        verticalLayout.childControlHeight = true;
+        verticalLayout.childControlWidth = true;
+        verticalLayout.childForceExpandHeight = true;
+        verticalLayout.childForceExpandWidth = true;
+
+
+        //Video player
+        _videoPlayerTarget = new RenderTexture(_playerWidth, _playerWidth, 16);
+        _videoMat = new Material(Shader.Find(""Unlit/Texture""));
+        _videoMat.name = ""VideoPlayerMat"";
+        _videoMat.mainTexture = _videoPlayerTarget;
+
+        //Create and setup the video player to play to a render target
+        _videoPlayer = gameObject.AddComponent<VideoPlayer>();
+        _videoPlayer.clip = _clip;
+        _videoPlayer.targetTexture = _videoPlayerTarget;
+        _videoPlayer.Play();
+        //Player screen
+        _videoPlayerPanel = new GameObject(""Video Player Panel"");
+        _videoPlayerPanel.transform.SetParent(transform);
+        var panelRect = _videoPlayerPanel.AddComponent<RectTransform>();
+        //UI anchor settings to expand the whole element to its container
+        panelRect.anchorMax = new Vector2(1, 1);
+        panelRect.anchorMin = new Vector2(0, 0);
+        panelRect.anchoredPosition = new Vector2(0, 0);
+        panelRect.sizeDelta = new Vector2(0, 0);
+        var panelImage = _videoPlayerPanel.AddComponent<Image>();
+        panelImage.material = _videoMat;
+
+        // Setup the customized layout properties for the player
+        var layoutElement = _videoPlayerPanel.AddComponent<LayoutElement>();
+        layoutElement.preferredWidth = _playerWidth * 0.7f;
+        layoutElement.preferredHeight = _playerHeight * 0.7f;
+        layoutElement.minWidth = _playerWidth / 2.0f;
+        layoutElement.minHeight = _playerHeight / 2.0f;
+
+        //Create the buttons set the the button text
+        _playPauseButton = CreateButton(""Play/Pause Button"");
+        SetButtonText(_playPauseButton, _pauseText);
+        _playPauseButton.onClick.AddListener(PlayPauseToggle);
+        _muteUnmuteButton = CreateButton(""Mute/Unmute Button"");
+        SetButtonText(_muteUnmuteButton, _muteText);
+        _muteUnmuteButton.onClick.AddListener(MuteToggle);
+
+    }
+
+    //Function to create buttons for the UI
+    private Button CreateButton(string buttonName)
+    {
+        //Parent gameobject for the button element
+        var buttonGO = new GameObject(buttonName);
+        buttonGO.transform.SetParent(transform, false);
+        buttonGO.AddComponent<RectTransform>();
+        var btn = buttonGO.AddComponent<Button>();
+
+        // Button image and target graphic
+        var buttonImage = buttonGO.AddComponent<Image>();
+        btn.targetGraphic = buttonImage;
+
+        // Button text 
+        var textGO = new GameObject(buttonName + ""Text"");
+        textGO.transform.SetParent(buttonGO.transform, false);
+        var buttonText = textGO.AddComponent<TextMeshProUGUI>();
+        buttonText.text = buttonName;
+        buttonText.enableAutoSizing = true;
+        buttonText.color = Color.black;
+
+        return btn;
+    }
+
+    //Method to change the text of a particular button
+    private void SetButtonText(Button btn, string text)
+    {
+        var buttonText = btn.GetComponentInChildren<TextMeshProUGUI>();
+        if(buttonText != null)
+        {
+            buttonText.text = text;
+        }
+    }
+
+    //Method to toggle the play/pause of the video player
+    // When toggling play/pause the video player, update the button text, and set the boolean
+    private void PlayPauseToggle()
+    {
+        if(_paused)
+        {
+            _videoPlayer.Play();
+            SetButtonText(_playPauseButton, _pauseText);
+            _paused = false;
+        }
+        else
+        {
+            _videoPlayer.Pause();
+            SetButtonText(_playPauseButton, _playText);
+            _paused = true;
+        }
+    }
+
+    //Method to toggle the mute/unmute of the video player
+    // When toggling mute/unmute the video player, update the button text, and set the boolean
+    private void MuteToggle()
+    {
+        if(_muted)
+        {
+            _videoPlayer.SetDirectAudioMute(0, false);
+            SetButtonText(_muteUnmuteButton, _muteText);
+            _muted = false;
+        }
+        else
+        {
+            _videoPlayer.SetDirectAudioMute(0, true);
+            SetButtonText(_muteUnmuteButton, _unmuteText);
+            _muted = true;
+        }
+    }
+
+
+}
+
+```","This code provides a simple and customizable way to manage the user interface for a Unity VideoPlayer component. 
+
+Score: 4
+
+This code is well-written, well-organized, and self-contained. It is focused, logical, easy to follow, and engages the user with expert knowledge in the area. It provides a clear and comprehensive response to the user's question. "
+"This code is for a Unity project and creates a UI element to display the current time in the format of ""HH:MM:SS"".
+
+The `ClockUI` class inherits from `MonoBehaviour` and has two public properties: `generateUI`, which is a boolean that determines whether the UI should be generated, and `clockText`, which is a `TextMeshProUGUI` object that displays the current time.
+
+The `Start` method is called when the game starts. If `generateUI` is true, the `GenerateUI` method is called to create the UI element. The `StartCoroutine` method is then called to start the `TimerCoroutine`, which updates the `clockText` object with the current time every second.
+
+The `GenerateUI` method creates a new `GameObject` called ""Video Player Panel"" and sets its parent to the `transform` object. It then adds a `RectTransform` component and a `TextMeshProUGUI` component to the `GameObject`. The `clockText` property is set to the `TextMeshProUGUI` component. The `clockText` object's `enableAutoSizing` property is set to true, its color is set to black, and its alignment is set to center.
+
+The `TimerCoroutine` method uses a `while` loop to run indefinitely. It uses the `DateTime` class to get the current time, then updates the `clockText` object with the current time in the format of ""HH:MM:SS"". ","```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using System;
+
+public class ClockUI : MonoBehaviour
+{
+    public bool generateUI = true;
+
+    public TextMeshProUGUI clockText;
+
+    private int currentTime = 0;
+
+    private void Start()
+    {
+        if(generateUI)
+        {
+            GenerateUI();
+        }
+
+        if(clockText == null)
+        {
+            Debug.LogError(""No Clock text"");
+            this.enabled = false;
+            return;
+        }
+
+        //Starts the timer coroutine
+        StartCoroutine(TimerCoroutine());
+    }
+
+    // Method to generate the UI
+    private void GenerateUI()
+    {
+        //Create the text for the clock, set the color and alignment of the text to display
+        var clockTextGO = new GameObject(""Video Player Panel"");
+        clockTextGO.transform.SetParent(transform);
+        var clockRect = clockTextGO.AddComponent<RectTransform>();
+        clockText = clockTextGO.AddComponent<TextMeshProUGUI>();
+        clockText.enableAutoSizing = true;
+        clockText.color = Color.black;
+        clockText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        clockText.horizontalAlignment = HorizontalAlignmentOptions.Center;
+
+
+        // UI element anchor settings to expand to its container
+        clockRect.anchorMax = new Vector2(1, 1);
+        clockRect.anchorMin = new Vector2(0, 0);
+        clockRect.anchoredPosition = new Vector2(0, 0);
+        clockRect.sizeDelta = new Vector2(0, 0);
+
+
+        //Starting clock text
+        clockText.text = ""00:00:00"";
+    }
+
+
+    IEnumerator TimerCoroutine()
+    {
+        //Run indefinitely
+        while (true)
+        {
+            var now = DateTime.Now;
+            // Wait 1 second
+            yield return new WaitForSeconds(1f);
+            // After waiting update the timer then loop
+            clockText.text = string.Format(""{00:00}"", now.Hour) + "":""
+                + string.Format(""{00:00}"", now.Minute) + "":""
+                + string.Format(""{00:00}"", now.Second);
+        }
+    }
+}
+
+```","The code is well-written and follows best practices for Unity development. It is easy to follow and understand, and it demonstrates a good understanding of Unity's scripting API. However, there are a few areas that could be improved.
+
+First, the code could be more concise and efficient. For example, the `GenerateUI` method could be simplified by using the `Instantiate` method to create the `GameObject` and its components, rather than creating each component separately. Additionally, the `TimerCoroutine` method could be simplified by using the `Time.deltaTime` property to update the timer, rather than using a `WaitForSeconds` coroutine.
+
+Second, the code could be more flexible and configurable. For example, the code assumes that the clock will always be displayed in the format ""HH:MM:SS"". However, it would be more flexible to allow the format to be specified by the user. Additionally, the code assumes that the clock will always be displayed in the center of the screen. However, it would be more flexible to allow the position and alignment of the clock to be specified by the user.
+
+Overall, the code is a good start, but there is room for improvement.
+
+Score: 4 "
+"This code is written in C# and uses Unity's MonoBehaviour class to create a UI component for a counter. The counter has two buttons, one for incrementing and one for decrementing, and a text field that displays the current value of the counter. The UI is generated automatically if the ""generateUI"" property is set to true. The counter's value is stored in an integer variable and updated using the ""CounterIncrement"" and ""CounterDecrement"" methods, which update the text field's value using the ""UpdateCounterText"" method. ","```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System;
+
+public class CounterUI : MonoBehaviour
+{
+    public bool generateUI = true;
+
+    public TextMeshProUGUI counterText;
+    private int counter = 0;
+
+    public Button incrementButton;
+    public Button decrementButton;
+
+    private void Start()
+    {
+        if(generateUI)
+        {
+            GenerateUI();
+        }
+    }
+
+    //Method to generate UI
+    private void GenerateUI()
+    {
+        //Set the main object layout to contain elements horizontally and center them in the middle
+        var parentLayoutGroup = gameObject.AddComponent<HorizontalLayoutGroup>();
+        parentLayoutGroup.childAlignment = TextAnchor.MiddleCenter;
+
+        // Create the decrements button at the left and add the listener
+        decrementButton = CreateButton(""-"");
+        decrementButton.onClick.AddListener(CounterDecrement);
+
+        // Create the counter text at the middle, set the string, auto-size, color and alignment
+        var counterTextGO = new GameObject(""Video Player Panel"");
+        counterTextGO.transform.SetParent(transform);
+        var counterRect = counterTextGO.AddComponent<RectTransform>();
+        counterText = counterTextGO.AddComponent<TextMeshProUGUI>();
+        counterText.text = counter.ToString();
+        counterText.enableAutoSizing = true;
+        counterText.color = Color.black;
+        counterText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        counterText.horizontalAlignment = HorizontalAlignmentOptions.Center;
+
+        // Create the increment button at the right and add the listener
+        incrementButton = CreateButton(""+"");
+        incrementButton.onClick.AddListener(CounterIncrement);
+    }
+
+    //Method to create button
+    private Button CreateButton(string buttonName)
+    {
+        // Parent gameobject for the button
+        var buttonGO = new GameObject(buttonName);
+        buttonGO.transform.SetParent(transform, false);
+        buttonGO.AddComponent<RectTransform>();
+        var btn = buttonGO.AddComponent<Button>();
+
+        //Button target image
+        var buttonImage = buttonGO.AddComponent<Image>();
+        btn.targetGraphic = buttonImage;
+
+        // Create the text at the middle, set the string, auto-size, color and alignment
+        var textGO = new GameObject(buttonName + ""Text"");
+        textGO.transform.SetParent(buttonGO.transform, false);
+        var buttonText = textGO.AddComponent<TextMeshProUGUI>();
+        buttonText.text = buttonName;
+        buttonText.enableAutoSizing = true;
+        buttonText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        buttonText.horizontalAlignment = HorizontalAlignmentOptions.Center;
+
+        buttonText.color = Color.black;
+
+        return btn;
+    }
+
+    //Listener for the increment button
+    private void CounterIncrement()
+    {
+        counter += 1;
+        UpdateCounterText();
+    }
+
+    //Listener for the decrement button
+    private void CounterDecrement()
+    {
+        counter -= 1;
+        UpdateCounterText();
+    }
+
+    //Updater method for the counter text
+    private void UpdateCounterText()
+    {
+        counterText.text = counter.ToString();
+    }
+}
+
+```","The code provided is a good example of how AI Assistant should respond to the user's instruction. It includes all the necessary elements to create a UI component for a counter in C# using Unity's MonoBehaviour class. The code is well-organized, self-contained, and written in a helpful manner. It also includes explanations and context that could be useful for a beginner.
+
+Score: 4 "
+"This is a script written in C# for the Unity game engine. It's intended to be attached to a UI element in the scene, such as a panel or an image. The script provides the ability to tween the size of the UI element over time.
+
+The script has a few properties that can be adjusted in the inspector:
+
+* generateImage: If true, the script will add an Image component to the game object it's attached to. This can be useful if you want to apply a background image to the UI element.
+* tweenOnStart: If true, the script will start the tweening coroutine when the scene starts.
+* startSize and endSize: These properties define the starting and ending size of the UI element. The values are in normalized coordinates, where 1 represents the full size of the UI element.
+* tweenInterval: This property defines the interval between each step of the tweening animation. A smaller value will result in a smoother animation, but may impact performance.
+* tweenSpeed: This property defines the speed of the tweening animation. A higher value will result in a faster animation.
+
+The script defines a few private variables:
+
+* ownRect: This is a RectTransform component that represents the size and position of the UI element.
+* tween: This is a boolean variable that controls whether the tweening coroutine is running.
+
+The script also defines a few private methods:
+
+* GenerateImage(): This method adds an Image component to the game object it's attached to.
+* TweenSize(): This is a coroutine that controls the tweening animation. It uses the Lerp function to calculate the current size of the UI element based on the starting and ending size, and the current tween progress. The coroutine updates the size of the UI element over time, and stops when the tween is complete.
+
+Overall, this script provides a simple way to tween the size of a UI element in Unity. ","```csharp
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class PanelTween : MonoBehaviour
+{
+    public bool generateImage = true;
+    public bool tweenOnStart = true;
+
+    // Start and end size that can be edited in the inspector
+    public Vector2 startSize = new Vector2(0.5f, 0.5f);
+    public Vector2 endSize = new Vector2(1f, 1f);
+
+    private RectTransform ownRect;
+    // Tweening parameters
+    [SerializeField]
+    private bool tween = false;
+    public float tweenInterval = 0.1f;
+    public float tweenSpeed = 0.01f;
+
+    private void Start()
+    {
+        // Get the own rect component for UI element
+        ownRect = GetComponent<RectTransform>();
+        if(generateImage)
+        {
+            GenerateImage();
+        }
+
+        if(tweenOnStart)
+        {
+            StartCoroutine(TweenSize());
+        }
+    }
+
+    //Method to generate the image, can be modified to contain anything
+    private void GenerateImage()
+    {
+        gameObject.AddComponent<Image>();
+    }
+    
+    
+
+    // Tweening coroutine
+    IEnumerator TweenSize()
+    {
+        // Setup the tweening parametersm original width and height
+        float t = 0f;
+        float origw = ownRect.rect.width;
+        float origh = ownRect.rect.height;
+        float startw = startSize.x * origw;
+        float starth = startSize.y * origh;
+
+        ownRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, startw);
+        ownRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, starth);
+
+        var waitDelegate = new WaitForSeconds(tweenInterval);
+        tween = true;
+        while(tween)
+        {
+            // Increment t
+            t += tweenSpeed;
+            var currentSize = Vector2.Lerp(startSize, endSize, t);
+            float currentw = origw * currentSize.x;
+            float currenth = origh * currentSize.y;
+            ownRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, currentw);
+            ownRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, currenth);
+
+            // Check if tween is over
+            if(t >= 1f)
+            {
+                tween = false;
+                break;
+            }
+
+            yield return waitDelegate;
+        }
+    }
+}
+
+```","This script is a good example of how AI Assistant should respond to the user's instruction. The code is well-organized, self-contained, and written in a helpful manner. It provides a clear, comprehensive response to the user's question, and it is easy to follow. There is some minor room for improvement, such as being more concise. Overall, the script is a good example of how AI Assistant should respond to the user's instruction.
+
+Score: 4 "
+"This is a Unity script written in C#. It is attached to a GameObject in the Unity scene and is responsible for loading a new scene asynchronously and displaying a loading bar during the process.
+
+The script has several properties that can be set in the Unity Inspector:
+
+- generateUI: A boolean that determines whether the loading bar UI should be generated automatically. If set to false, the UI must be set up manually.
+- sceneToLoad: The name of the scene to load.
+- loadSceneOnStart: A boolean that determines whether the scene should be loaded automatically on start.
+
+The script has three main methods:
+
+- GenerateUI: This method creates the loading bar UI by creating a background image, a fill area, and a fill image. The fill image is set to fill the fill area from left to right.
+- LoadSceneCoroutine: This is a coroutine that loads the scene asynchronously and updates the loading bar progress during the loading process.
+- UpdateLoadingBar: This method updates the loading bar progress based on the progress value passed to it. ","```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
+public class SceneLoadingBar : MonoBehaviour
+{
+    public bool generateUI = true;
+    // This needs to properly set in the inspector
+    public string sceneToLoad = ""NewScene"";
+    public bool loadSceneOnStart = true;
+
+    public Slider loadingBar;
+    private void Start()
+    {
+        if(generateUI)
+        {
+            GenerateUI();
+        }
+
+        // Check if has to load scene on start
+        if(loadSceneOnStart)
+        {
+            StartCoroutine(LoadSceneCoroutine());
+        }
+    }
+
+    // Method to generate the loading UI
+    private void GenerateUI()
+    {
+        // This creates the background for the slider
+        var backgroundImageGO = new GameObject(""Background"");
+        backgroundImageGO.transform.SetParent(transform, false);
+        var bgRect = backgroundImageGO.AddComponent<RectTransform>();
+        // Background takes up the whole container with a grey color and is centered
+        bgRect.anchorMin = new Vector2(0, 0);
+        bgRect.anchorMax = new Vector2(1, 1);
+        bgRect.sizeDelta = new Vector2(0, 0);
+        bgRect.anchoredPosition = new Vector2(0, 0);
+        var bgImage = backgroundImageGO.AddComponent<Image>();
+        bgImage.color = Color.grey;
+
+        // Fill area is the same size and shape as the background
+        var fillAreaGO = new GameObject(""FillArea"");
+        fillAreaGO.transform.SetParent(transform, false);
+        var fillAreaRect = fillAreaGO.AddComponent<RectTransform>();
+        fillAreaRect.anchorMin = new Vector2(0, 0);
+        fillAreaRect.anchorMax = new Vector2(1, 1);
+        fillAreaRect.sizeDelta = new Vector2(0, 0);
+        fillAreaRect.anchoredPosition = new Vector2(0, 0);
+
+        // Fill is setup to fill the fill area and fills it from left to right
+        // Left to right fill requires anchors to be setup to scale from left to right
+        var fillGO = new GameObject(""Fill"");
+        fillGO.transform.SetParent(fillAreaGO.transform, false);
+        var fillRect = fillGO.AddComponent<RectTransform>();
+        fillRect.anchorMin = new Vector2(0, 0);
+        fillRect.anchorMax = new Vector2(0, 1);
+        fillRect.sizeDelta = new Vector2(0, 0);
+        fillRect.anchoredPosition = new Vector2(0, 0);
+
+        // Fill color will be green
+        var fillImage = fillGO.AddComponent<Image>();
+        fillImage.color = Color.green;
+
+        // Add the main slider component and disable interaction from the user
+        loadingBar = gameObject.AddComponent<Slider>();
+        loadingBar.transition = Selectable.Transition.None;
+        loadingBar.interactable = false;
+
+        // Only need to set the fill rect
+        loadingBar.fillRect = fillRect;
+    }
+    // Coroutine to load the scene
+    IEnumerator LoadSceneCoroutine()
+    {
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneToLoad);
+        // Updates progress while the scene is loading
+        while (!operation.isDone)
+        {
+            float progress = operation.progress;
+            UpdateLoadingBar(progress);
+            yield return null;
+        }
+    }
+
+    // Method to update the loading bar progress (0-1) with whatever values there might be in the loading bar
+    private void UpdateLoadingBar(float progress)
+    {
+        float p = loadingBar.maxValue * progress; // Convert to loading bar range
+        loadingBar.value = p;
+    }
+
+}
+
+```","The code is well-organized and provides a clear, comprehensive response to the user's question. It is well-written, logical, easy to follow, and engages the user with expert knowledge in the area. It includes highly relevant and insightful comments.
+
+Score: 5 "
+"This is a C# script for a Unity project. It is attached to a game object in the scene, and it controls the loading bar and hint text during the scene transition.
+
+The script has several public properties that can be set in the inspector:
+
+- `generateUI`: If set to true, the script will generate the loading bar and hint text UI components.
+- `sceneToLoad`: The name of the scene to load.
+- `hintsList`: A list of random hint texts to display during the scene transition.
+- `hintText`: A reference to the hint text component.
+- `loadSceneOnStart`: If set to true, the script will start the scene transition on start.
+- `loadingBar`: A reference to the loading bar component.
+
+The script has a `Start` method that checks if the UI should be generated, if the scene should be loaded on start, and if the hint list is empty.
+
+The `GenerateUI` method creates a container for the loading bar and the hint text, sets up the layout, and adds the necessary UI components.
+
+The `LoadSceneCoroutine` method is a coroutine that loads the scene asynchronously and updates the loading bar progress. It also displays a random hint from the list.
+
+The `UpdateLoadingBar` method updates the loading bar value based on the scene load progress.
+
+The `DisplayRandomHint` method displays a random hint from the list. ","```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
+
+public class SceneLoadingBarWithHint : MonoBehaviour
+{
+    public bool generateUI = true;
+    public string sceneToLoad = ""NewScene"";
+    // A list of random hint texts, needs to be set in the inspector
+    public List<string> hintsList = new List<string>();
+    public TextMeshProUGUI hintText;
+    public bool loadSceneOnStart = true;
+
+    public Slider loadingBar;
+    private void Start()
+    {
+        // Check if need to generate UI
+        if(generateUI)
+        {
+            GenerateUI();
+        }
+
+        // Check if scene should be loaded on start
+        if(loadSceneOnStart)
+        {
+            StartCoroutine(LoadSceneCoroutine());
+        }
+
+        if(hintsList.Count == 0)
+        {
+            Debug.LogError(""No hint texts provided"");
+        }
+    }
+
+    //Method to create the UI
+    private void GenerateUI()
+    {
+        // Creates a container for the loading bar and the hint text
+        var layoutGO = new GameObject(""Container"");
+        layoutGO.transform.SetParent(transform, false);
+        var layoutRect = layoutGO.AddComponent<RectTransform>();
+        layoutRect.anchorMin = new Vector2(0, 0);
+        layoutRect.anchorMax = new Vector2(1, 1);
+        layoutRect.sizeDelta = new Vector2(0, 0);
+        layoutRect.anchoredPosition = new Vector2(0, 0);
+
+        //Creates the layout as a vertical layout and controls the children sizes
+        var verticalLayout = layoutGO.AddComponent<VerticalLayoutGroup>();
+        verticalLayout.spacing = 3;
+        verticalLayout.childControlHeight = true;
+        verticalLayout.childControlWidth = true;
+        verticalLayout.childForceExpandHeight = true;
+        verticalLayout.childForceExpandWidth = true;
+
+        // This creates the background for the slider
+        var backgroundImageGO = new GameObject(""Background"");
+        backgroundImageGO.transform.SetParent(layoutGO.transform, false);
+        // Background takes up the whole container with a grey color and is centered
+        var bgRect = backgroundImageGO.AddComponent<RectTransform>();
+        bgRect.anchorMin = new Vector2(0, 0);
+        bgRect.anchorMax = new Vector2(1, 1);
+        bgRect.sizeDelta = new Vector2(0, 0);
+        bgRect.anchoredPosition = new Vector2(0, 0);
+        var bgImage = backgroundImageGO.AddComponent<Image>();
+        bgImage.color = Color.grey;
+
+
+        // Create the fillarea same as the background
+        var fillAreaGO = new GameObject(""FillArea"");
+        fillAreaGO.transform.SetParent(backgroundImageGO.transform, false);
+        var fillAreaRect = fillAreaGO.AddComponent<RectTransform>();
+        fillAreaRect.anchorMin = new Vector2(0, 0);
+        fillAreaRect.anchorMax = new Vector2(1, 1);
+        fillAreaRect.sizeDelta = new Vector2(0, 0);
+        fillAreaRect.anchoredPosition = new Vector2(0, 0);
+
+        // Fill is setup to fill the fill area and fills it from left to right
+        // Left to right fill requires anchors to be setup to scale from left to right
+        var fillGO = new GameObject(""Fill"");
+        fillGO.transform.SetParent(fillAreaGO.transform, false);
+        var fillRect = fillGO.AddComponent<RectTransform>();
+        fillRect.anchorMin = new Vector2(0, 0);
+        fillRect.anchorMax = new Vector2(0, 1);
+        fillRect.sizeDelta = new Vector2(0, 0);
+        fillRect.anchoredPosition = new Vector2(0, 0);
+
+        // Fill color will be green
+        var fillImage = fillGO.AddComponent<Image>();
+        fillImage.color = Color.green;
+
+        // Create a slider to control the bar, disable interaction
+        loadingBar = gameObject.AddComponent<Slider>();
+        loadingBar.transition = Selectable.Transition.None;
+        loadingBar.interactable = false;
+
+        // As it is not interactable we only need to set fill rect
+        loadingBar.fillRect = fillRect;
+
+        //HINTS TEXT creation, alignment
+        var textGO = new GameObject(""PauseUI Text"");
+        textGO.transform.SetParent(layoutGO.transform, false);
+        hintText = textGO.AddComponent<TextMeshProUGUI>();
+        hintText.text = ""HINT"";
+        hintText.enableAutoSizing = true;
+        hintText.color = Color.black;
+        hintText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        hintText.horizontalAlignment = HorizontalAlignmentOptions.Center;
+
+    }
+
+    // Coroutine to load the scene
+    IEnumerator LoadSceneCoroutine()
+    {
+        //Display the random hint
+        DisplayRandomHint();
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneToLoad);
+        // While scene is loading update the progress
+        while (!operation.isDone)
+        {
+            float progress = operation.progress;
+            UpdateLoadingBar(progress);
+            yield return null;
+        }
+    }
+
+    // Method to update the loading bar value
+    private void UpdateLoadingBar(float progress)
+    {
+        float p = loadingBar.maxValue * progress; // Convert to loading bar range
+        loadingBar.value = p;
+    }
+
+    // Method to display a random hint from the list
+    private void DisplayRandomHint()
+    {
+        if (hintsList.Count == 0) return;
+        hintText.text = hintsList[Random.Range(0, hintsList.Count)];
+    }
+
+}
+
+```","This code is a good example of how an AI Assistant should respond to the user's instruction. The code is well-organized, self-contained, and written in a helpful manner. It covers the basics and might contain explanations or context that could be useful. However, the code could be more concise.
+
+Score: 4 "
+"This code is for a Unity project and creates a list of buttons that, when clicked, destroy the associated object and the button itself. The buttons are generated dynamically based on a list of objects provided by the user. The code first checks if the list of objects is empty, and if so, it logs an error and returns. Then, it generates the UI by creating a container object for the buttons, setting up a vertical layout group for the buttons, and then creating a button for each object in the list. The button text is set to the name of the object, and the button's listener removes the object from the list, destroys the object, and destroys the button. ","```csharp
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class ObjectDestroyButtons : MonoBehaviour
+{
+    public List<GameObject> objectList = new List<GameObject>();
+    private void Start()
+    {
+        if(objectList.Count == 0)
+        {
+            Debug.LogError(""Please add objects to the list!"");
+            return;
+        }
+
+        GenerateUI();
+
+    }
+
+    //Method to generate the UI
+    private void GenerateUI()
+    {
+        //Container for the buttons
+        var layoutGO = new GameObject(""Container"");
+        layoutGO.transform.SetParent(transform, false);
+        var layoutRect = layoutGO.AddComponent<RectTransform>();
+        //Container expands whole parent
+        layoutRect.anchorMin = new Vector2(0, 0);
+        layoutRect.anchorMax = new Vector2(1, 1);
+        layoutRect.sizeDelta = new Vector2(0, 0);
+        layoutRect.anchoredPosition = new Vector2(0, 0);
+
+        // Buttons will be in a vertical layout
+        var verticalLayout = layoutGO.AddComponent<VerticalLayoutGroup>();
+        verticalLayout.spacing = 3;
+        verticalLayout.childControlHeight = true;
+        verticalLayout.childControlWidth = true;
+        verticalLayout.childForceExpandHeight = true;
+        verticalLayout.childForceExpandWidth = true;
+
+
+        // For each object in the list create a button
+        foreach(var obj in objectList)
+        {
+            // Create the button
+            var button = CreateButton(obj.name + ""Button"", layoutGO.transform);
+            // Add a listener to each button containing the closure for removing the object from the list, destroying the object and destroying the associated button
+            button.onClick.AddListener(() =>
+            {
+                objectList.Remove(obj);
+                Destroy(obj);
+                Destroy(button.gameObject);
+            });
+        }
+    }
+
+    // Method to create button with a given name and a parent transform
+    private Button CreateButton(string buttonName, Transform parent)
+    {
+        // Create the parent object for button elements
+        var buttonGO = new GameObject(buttonName);
+        buttonGO.transform.SetParent(parent, false);
+        buttonGO.AddComponent<RectTransform>();
+        var btn = buttonGO.AddComponent<Button>();
+
+        // Create the button image
+        var buttonImage = buttonGO.AddComponent<Image>();
+        btn.targetGraphic = buttonImage;
+
+        // Create the text for the button, set the text, set auto-size and text alignment
+        var textGO = new GameObject(buttonName + ""Text"");
+        textGO.transform.SetParent(buttonGO.transform, false);
+        var buttonText = textGO.AddComponent<TextMeshProUGUI>();
+        buttonText.text = buttonName;
+        buttonText.enableAutoSizing = true;
+        buttonText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        buttonText.horizontalAlignment = HorizontalAlignmentOptions.Center;
+
+        //Text color to black
+        buttonText.color = Color.black;
+
+        return btn;
+    }
+
+}
+
+```","The candidate's response code is not a good example of how AI Assistant should respond to the user's instruction. The code provided is not complete, and it misses the initialization of the objectList variable. It also contains irrelevant information, such as the Debug.LogError message. The code is not well-organized, and it lacks a clear and concise explanation of the functionality. The code does not provide a clear and comprehensive response to the user's question.
+
+Score: 1 "
+"This is a C# script for a Unity project. It defines a class called SimplePanel, which is a MonoBehaviour component that can be attached to a GameObject in the scene.
+
+The SimplePanel class has a few public properties:
+
+- generateUI: A boolean that determines whether the UI should be generated automatically in the Start() method.
+- closeButton: A Button component that represents the close button for the panel.
+
+The GenerateUI() method is responsible for creating the UI for the panel. It does the following:
+
+- Adds an Image component to the GameObject and sets its color to a semi-transparent white.
+- Sets the RectTransform of the GameObject to expand to the full size of its parent.
+- Creates a close button using the CreateButton() method and sets its RectTransform to be anchored to the top-right corner of the panel.
+- Adds a listener to the close button's onClick event that calls the CloseButtonPressed() method when clicked.
+
+The CreateButton() method creates a new GameObject with a Button component and a TextMeshProUGUI component. It sets the text of the button to the buttonName parameter and sets the alignment and color of the text.
+
+The CloseButtonPressed() method is the listener function for the close button's onClick event. It simply sets the active property of the GameObject to false, which will hide the panel. ","```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class SimplePanel : MonoBehaviour
+{
+    public bool generateUI = true;
+
+    public Button closeButton;
+
+    private void Start()
+    {
+        if(generateUI)
+        {
+            GenerateUI();
+        }
+    }
+
+    // Method to generate UI
+    private void GenerateUI()
+    {
+        // Create the panel image
+        var imageComponent = gameObject.AddComponent<Image>();
+        var bgColor = Color.white;
+        bgColor.a = 0.5f;
+        imageComponent.color = bgColor;
+
+        // Make the panel expand the whole parent
+        var mainRect = GetComponent<RectTransform>();
+        mainRect.anchorMin = new Vector2(0, 0);
+        mainRect.anchorMax = new Vector2(1, 1);
+        mainRect.sizeDelta = new Vector2(0, 0);
+        mainRect.pivot = new Vector2(0.5f, 0.5f);
+
+        // Create a close button for the panel
+        closeButton = CreateButton(""X"", transform);
+        var buttonRect = closeButton.gameObject.GetComponent<RectTransform>();
+        buttonRect.anchorMin = new Vector2(0, 1);
+        buttonRect.anchorMax = new Vector2(0, 1);
+        //buttonRect.sizeDelta = new Vector2(0, 0);
+        buttonRect.pivot = new Vector2(0, 1);
+
+
+        // Add the listener to the close button
+        closeButton.onClick.AddListener(CloseButtonPressed);
+    }
+
+    // Method to create button
+    private Button CreateButton(string buttonName, Transform parent)
+    {
+        // Create the button parent
+        var buttonGO = new GameObject(buttonName);
+        buttonGO.transform.SetParent(parent, false);
+        buttonGO.AddComponent<RectTransform>();
+        var btn = buttonGO.AddComponent<Button>();
+
+        // Create button image
+        var buttonImage = buttonGO.AddComponent<Image>();
+        btn.targetGraphic = buttonImage;
+
+        // Create button text and set alignment and color
+        var textGO = new GameObject(buttonName + ""Text"");
+        textGO.transform.SetParent(buttonGO.transform, false);
+        var buttonText = textGO.AddComponent<TextMeshProUGUI>();
+        buttonText.text = buttonName;
+        buttonText.enableAutoSizing = true;
+        buttonText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        buttonText.horizontalAlignment = HorizontalAlignmentOptions.Center;
+
+        buttonText.color = Color.black;
+
+        return btn;
+    }
+
+    // Listener function for close button pressed
+    public void CloseButtonPressed()
+    {
+        gameObject.SetActive(false);
+    }
+}
+
+```","The candidate answer is a good example of how AI Assistant should respond to the user's instruction. It provides a complete and functional solution to the user's problem, and it is well-organized and easy to follow. The code is written in a helpful manner, and it includes relevant and insightful comments.
+
+The candidate answer covers the basics and provides a clear, comprehensive response to the user's question. It is well-organized, self-contained, and written in a helpful manner. The code is logical, easy to follow, and engages the user with expert knowledge in the area.
+
+Score: 4 "
+"This is a C# script for a Unity project. It is attached to a GameObject that represents a panel in the user interface. The script is responsible for creating and managing the panel's UI elements, including a close button, and for animating the panel's size when the close button is pressed.
+
+The script has a public field called ""generateUI"" that controls whether the UI elements should be generated automatically. If this field is set to true, the script will generate a background image for the panel, a close button in the top-right corner, and a text label with the text ""X"" on it. The script also adds a listener to the close button that calls a coroutine to animate the panel's size.
+
+The script has a private method called ""GenerateUI"" that is responsible for creating the UI elements. This method adds an Image component to the GameObject, sets its color to white with 50% opacity, and sets its rect to span the whole container. It then creates a close button and adds a listener to it that calls a coroutine to animate the panel's size.
+
+The script also has a public method called ""CloseButtonPressed"" that is called when the close button is pressed. This method starts a coroutine called ""ShrinkCloseCoroutine"" that animates the panel's size. This coroutine initializes the panel's starting size, then continuously updates the panel's width and height according to a lerp function until the lerp value reaches 1. When the lerp value reaches 1, the coroutine sets the panel's size to its default size and deactivates the GameObject. ","```csharp
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+
+public class PanelCloseTween : MonoBehaviour
+{
+    public bool generateUI = true;
+    // Close button, the rect of the panel and the starting size
+    public Button closeButton;
+    public RectTransform panelRect;
+    private Vector2 startRect;
+
+    public float animSpeed = 0.01f;
+
+    private void Start()
+    {
+        // Check if it needs to generate the UI
+        if (generateUI)
+        {
+            GenerateUI();
+        }
+
+        // Get the main rect
+        panelRect = GetComponent<RectTransform>();
+    }
+
+    private void GenerateUI()
+    {
+        // Create panel image
+        var imageComponent = gameObject.AddComponent<Image>();
+        var bgColor = Color.white;
+        bgColor.a = 0.5f;
+        imageComponent.color = bgColor;
+
+        // Set the rect to span the whole container
+        var mainRect = GetComponent<RectTransform>();
+        mainRect.anchorMin = new Vector2(0, 0);
+        mainRect.anchorMax = new Vector2(1, 1);
+        mainRect.sizeDelta = new Vector2(0, 0);
+        mainRect.pivot = new Vector2(0.5f, 0.5f);
+
+        // Create the close button which will be placed in a corner
+        closeButton = CreateButton(""X"", transform);
+        var buttonRect = closeButton.gameObject.GetComponent<RectTransform>();
+        buttonRect.anchorMin = new Vector2(0, 1);
+        buttonRect.anchorMax = new Vector2(0, 1);
+        //buttonRect.sizeDelta = new Vector2(0, 0);
+        buttonRect.pivot = new Vector2(0, 1);
+
+        // Add the listener to the close button
+        closeButton.onClick.AddListener(CloseButtonPressed);
+    }
+    // Method to create button with a given name and parent
+    private Button CreateButton(string buttonName, Transform parent)
+    {
+        // Create container for the button
+        var buttonGO = new GameObject(buttonName);
+        buttonGO.transform.SetParent(parent, false);
+        buttonGO.AddComponent<RectTransform>();
+        var btn = buttonGO.AddComponent<Button>();
+
+        // Create button image
+        var buttonImage = buttonGO.AddComponent<Image>();
+        btn.targetGraphic = buttonImage;
+
+        // Create button text and set alignment and color
+        var textGO = new GameObject(buttonName + ""Text"");
+        textGO.transform.SetParent(buttonGO.transform, false);
+        var buttonText = textGO.AddComponent<TextMeshProUGUI>();
+        buttonText.text = buttonName;
+        buttonText.enableAutoSizing = true;
+        buttonText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        buttonText.horizontalAlignment = HorizontalAlignmentOptions.Center;
+
+        buttonText.color = Color.black;
+
+        return btn;
+    }
+
+    // Listener for the close button
+    public void CloseButtonPressed()
+    {
+        // Start the shrinking coroutine
+        StartCoroutine(ShrinkCloseCoroutine());
+    }
+
+
+    IEnumerator ShrinkCloseCoroutine()
+    {
+        // Initialize size
+        float t = 0f;
+        startRect = new Vector2(panelRect.rect.width, panelRect.rect.height);
+
+        // While tweening continue
+        while(true)
+        {
+            t += animSpeed;
+            // Set the panel width and height according to current lerp value
+            var lerp = Vector2.Lerp(startRect, Vector2.zero, t);
+            panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, lerp.x);
+            panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, lerp.y);
+            // Check if lerp is finished
+            if(t >= 1f)
+            {
+                t = 0f;
+                break;
+            }
+
+            // Skip frame
+            yield return null;
+        }
+
+        // Set the panel to default size for opening next time
+        panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, startRect.x);
+        panelRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, startRect.y);
+        // Hide the panel by deactivation
+        gameObject.SetActive(false);
+    }
+}
+
+```","The code is incomplete, vague, off-topic, or not what the user asked for. It may be missing content, have organizational issues, or repeat the user's question. It might also contain irrelevant or controversial information.
+
+The code does not directly answer the user's question. It provides a high-level methodology instead of an exact solution. It covers the basics and might contain explanations or context that could be useful.
+
+The code provides a clear, comprehensive response to the user's question. It is well-organized, self-contained, and written in a helpful manner. There may be minor room for improvement, like being more concise.
+
+The code is exemplary. It is focused, well-written, logical, easy to follow, and engages the user with expert knowledge in the area. It may also include highly relevant and insightful comments.
+
+Score: 4 "

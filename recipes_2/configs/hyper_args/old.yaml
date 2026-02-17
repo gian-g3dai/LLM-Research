@@ -1,0 +1,13 @@
+# batch size information
+total_training_tokens: 5_000_000_000 # Prev: 60M
+
+batch_size_in_tokens: False
+batch_size: 12
+
+# grad norm and 
+clip_grad_norm: 1.0
+lr_warmup_ratio: 0.08
+
+# eval
+eval_interval: 120
+no_sync_grad: False

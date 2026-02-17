@@ -1,0 +1,5 @@
+strategy: FSDP_2
+fsdp_settings:
+  wrapping_policy: ["TransformerBlock"]
+  act_ckpt_layers: ["TransformerBlock"]
+  mixed_precision: MP_POLICY.DEFAULT

@@ -1,0 +1,12 @@
+strategy: FSDP_1
+fsdp_settings:
+  cpu_offload: False
+  wrapping_policy:
+    lora_cls: LoraLayer
+    wrap_active_params: False
+    individual_cls: []
+    transformer_block_cls: ["TransformerBlock"]
+  forward_prefetch: True
+  backward_prefetch: True
+  act_ckpt_layers: ["TransformerBlock"]
+  mixed_precision: MP_POLICY.BF_16

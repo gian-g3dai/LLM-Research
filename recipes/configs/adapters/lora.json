@@ -1,0 +1,20 @@
+{
+  "lora": {
+    "rank": 128,
+    "alpha": 8,
+    "layer_names": ["wk", "wv", "wq", "wo"],
+    "use_fourrier_features": false,
+    "dropout": 0.5
+  },
+  "norm": {
+    "layer_names": ["norm"]
+  },
+  "bias_scale": {
+    "layer_names": ["w1", "w2", "w3"],
+    "bias": true,
+    "scale": true
+  },
+  "lm_head": {
+    "layer_names": ["output"]
+  }
+}

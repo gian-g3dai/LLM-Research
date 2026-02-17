@@ -1,0 +1,5 @@
+log_interval: 4
+wandb:
+  project: "llm_long"
+  experiment_name: "test_1"
+  key: REMOVED # REMOVED # ted

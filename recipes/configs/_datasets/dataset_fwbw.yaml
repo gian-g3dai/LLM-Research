@@ -1,0 +1,868 @@
+dataset:
+  max_length: 32_768
+  multisample: true
+  dynamic_seq_len: false
+  infinite: true
+  no_truncate_next: true
+data_root: /mnt/raid0/datasets/
+datasource_weights:
+
+  platypus: 3
+  platypus_reversed: 3
+  hotpot: 4
+  muffin_reversed: 3
+  code_contests: 3
+  code_contests_reversed: .125
+  commit_pack: 2.5
+  dolly: 18
+  dolly_reversed: 12
+  oasst: 37.5
+  helpsteer: 17.5
+  github: 2.5
+  redpj: 2
+  stack_exchange: 4
+  unity_docs: 0.3
+  
+
+datasources:
+  platypus:
+    type: InstructionLMDataSource
+    data_path: platy/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: OpenPlatypusReader
+      processors:
+        - OpenPlatypusProcessor
+        - StripProcessor:
+            source_cols:
+              - instruction
+              - output
+        - TokenCountInfo:
+            source_col: output                
+        - TokenCountInfo:
+            source_col: instruction                
+        - SumTokenCountFilter:
+            source_cols:
+              - output
+              - instruction
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "platypus_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {instruction} [/INST] "
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{output} "
+
+  platypus_reversed:
+    type: InstructionLMDataSource
+    data_path: platy/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: OpenPlatypusReader
+      processors:
+        - OpenPlatypusProcessor
+        - StripProcessor:
+            source_cols:
+              - instruction
+              - output
+        - TokenCountInfo:
+            source_col: output                
+        - TokenCountInfo:
+            source_col: instruction                
+        - SumTokenCountFilter:
+            source_cols:
+              - output
+              - instruction
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "platypus_reversed_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}\n{output} [/INST]"
+          - "[INST] {output}\n{prompt} [/INST]"
+        mapping:
+          prompt: ["Craft a query or statement designed to elicit the given response, taking into account the context and desired information. Ensure the question is precise, pertinent, and appropriately constructed to garner a substantial and informative reply.",
+                    "Generate a question or prompt that is anticipated to elicit the provided response. Consider the context and the specific information you aim to gather. Ensure that the query is lucid, pertinent, and appropriately framed for a substantial and informative reply.",
+                    "Devise a query or prompt that is expected to prompt the provided response. Take into account the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately phrased to generate a meaningful and informative reply.",
+                    "Create a question or prompt that is likely to trigger the given response, considering the context and the specific information you intend to obtain. Make sure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                    "Construct a question or statement designed to provoke the provided response, considering the context and the kind of information you aim to extract. Ensure that the query is precise, relevant, and appropriately framed for a substantial and informative reply.",
+                    "Develop a query or prompt expected to draw out the provided response. Take into consideration the context and the specific information desired. Ensure the question is clear, relevant, and appropriately constructed for a meaningful and informative reply.",
+                    "Formulate a question or prompt that is likely to induce the provided response, considering the context and the type of information you want to elicit. Ensure that the question is clear, relevant, and appropriately framed to generate a meaningful and informative response.",
+                    "Create a question or prompt anticipated to generate the provided response. Take into account the context and the kind of information you're seeking. Ensure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                    "Generate a question or statement designed to extract the given response, considering the context and the specific information you intend to gather. Make sure the question is clear, relevant, and appropriately phrased for a substantial and informative reply.",
+                    "Devise a query or prompt that is expected to solicit the provided response. Take into consideration the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately constructed for a meaningful and informative reply."]
+      - type: FstringTemplater
+        fstring:
+          - "{instruction} "
+
+  muffin:
+    type: InstructionLMDataSource
+    data_path: muffin/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: MuffinReader
+      processors:
+        - MuffinProcessor
+        - StripProcessor:
+            source_cols:
+              - instruction
+              - output
+        - TokenCountInfo:
+            source_col: output                
+        - TokenCountInfo:
+            source_col: instruction                
+        - SumTokenCountFilter:
+            source_cols:
+              - output
+              - instruction
+            token_interval: [512, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "muffin_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}\n{instruction} [/INST] "
+        mapping:
+          prompt: ["Respond to the following question or prompt with information firmly grounded in verified sources, avoiding speculation or subjective content. Ensure your answers are based on established facts accepted widely within relevant disciplines.",
+                    "Craft your response to the following question or prompt using information derived from well-verified sources. Steer clear of speculative or subjective content, and ensure your answers are firmly rooted in widely accepted facts across relevant disciplines.",
+                    "Provide a response to the given question or prompt rooted in verified information. Avoid speculative or subjective content, and ensure that your answers rely exclusively on well-verified facts accepted across pertinent disciplines.",
+                    "When responding to the following question or prompt, rely solely on information from well-verified sources. Refrain from speculative or subjective content, and ensure your answers are based on widely accepted facts within relevant disciplines.",
+                    "Generate a response to the provided question or prompt using information from reliable sources. Avoid speculative or subjective content, and ensure your answers are firmly based on widely accepted facts in relevant disciplines.",
+                    "Respond to the forthcoming question or prompt by drawing exclusively from well-verified information. Steer clear of speculative or subjective content, and ensure your answers are rooted in established facts accepted across pertinent disciplines.",
+                    "When addressing the following question or prompt, ensure your response is built on verified information. Avoid speculative or subjective content, and ensure your answers are firmly grounded in well-accepted facts within relevant disciplines.",
+                    "Provide a response to the upcoming question or prompt that is solely based on well-verified information. Avoid speculative or subjective content, and make sure your answers are firmly rooted in established facts widely accepted across pertinent disciplines.",
+                    "Respond to the forthcoming question or prompt using information from reputable sources. Avoid speculative or subjective content, and ensure your answers are firmly based on widely accepted facts in relevant disciplines.",
+                    "When generating your response to the following question or prompt, make sure it is based on information from verified sources. Steer clear of speculative or subjective content, and ensure your answers are firmly grounded in established facts accepted across pertinent disciplines."]
+      - type: FstringTemplater
+        fstring:
+          - "{output} "
+
+  # muffin reversed
+  muffin_reversed:
+    type: InstructionLMDataSource
+    data_path: muffin/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: MuffinReader
+      processors:
+        - MuffinProcessor
+        - TokenCountInfo:
+            source_col: output                
+        - TokenCountInfo:
+            source_col: instruction                
+        - SumTokenCountFilter:
+            source_cols:
+              - output
+              - instruction
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "muffin_reversed_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}\n{output} [/INST]"
+          - "[INST] {output}\n{prompt} [/INST]"
+        mapping:
+          prompt: ["Craft a query or statement designed to elicit the given response, taking into account the context and desired information. Ensure the question is precise, pertinent, and appropriately constructed to garner a substantial and informative reply.",
+                    "Generate a question or prompt that is anticipated to elicit the provided response. Consider the context and the specific information you aim to gather. Ensure that the query is lucid, pertinent, and appropriately framed for a substantial and informative reply.",
+                    "Devise a query or prompt that is expected to prompt the provided response. Take into account the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately phrased to generate a meaningful and informative reply.",
+                    "Create a question or prompt that is likely to trigger the given response, considering the context and the specific information you intend to obtain. Make sure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                    "Construct a question or statement designed to provoke the provided response, considering the context and the kind of information you aim to extract. Ensure that the query is precise, relevant, and appropriately framed for a substantial and informative reply.",
+                    "Develop a query or prompt expected to draw out the provided response. Take into consideration the context and the specific information desired. Ensure the question is clear, relevant, and appropriately constructed for a meaningful and informative reply.",
+                    "Formulate a question or prompt that is likely to induce the provided response, considering the context and the type of information you want to elicit. Ensure that the question is clear, relevant, and appropriately framed to generate a meaningful and informative response.",
+                    "Create a question or prompt anticipated to generate the provided response. Take into account the context and the kind of information you're seeking. Ensure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                    "Generate a question or statement designed to extract the given response, considering the context and the specific information you intend to gather. Make sure the question is clear, relevant, and appropriately phrased for a substantial and informative reply.",
+                    "Devise a query or prompt that is expected to solicit the provided response. Take into consideration the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately constructed for a meaningful and informative reply."]
+      - type: FstringTemplater
+        fstring:
+          - "{instruction}"
+
+  code_contests:
+    type: InstructionLMDataSource
+    data_path: code_contests/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: CodeContestsReader
+      processors:
+        - CodeContestsProcessor:
+            sol_cnt: 20
+        - StripProcessor:
+            source_cols:
+              - description
+        - NormalizeCode:
+            source_col: solution
+        - BackticksLangs:
+            source_col: solution
+            language_col: language
+        - TokenCountInfo:
+            source_col: description
+        - TokenCountInfo:
+            source_col: solution
+        - SumTokenCountFilter:
+            source_cols:
+              - description
+              - solution
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        # - CacheProcessor:
+        #     name: "code_contests_train_10sol"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}\n{description} [/INST] "
+        mapping:
+          prompt: ["Develop a {language} program that not only accomplishes the provided task efficiently but also adheres to industry best practices. Focus on writing clean, readable, and maintainable code. Ensure comprehensive commenting and documentation for clear understanding. Optimize algorithms and data structures for performance. Rigorously test the code for accuracy, considering potential edge cases and handling exceptions gracefully. Aim for code that exhibits both elegance and resilience, showcasing proficiency in {language}.",
+                    "Craft a {language} program that addresses the assigned task with an emphasis on code quality. Pay close attention to readability, maintainability, and scalability. Implement thorough comments and documentation to facilitate comprehension. Optimize algorithms and data structures for optimal performance. Conduct comprehensive testing, accounting for edge cases and error handling. Strive for code that is not only functional but also elegant and robust, showcasing your proficiency in {language}.",
+                    "In {language}, create a program that effectively addresses the provided task. It is crucial that your code is of high quality, adhering to best practices and industry standards. Focus on making it readable, maintainable, and scalable. Ensure that you incorporate comprehensive comments and documentation for better understanding. Optimize algorithms and data structures for efficiency. Rigorously test your code for correctness, considering potential edge cases and handling exceptions gracefully. Aim for code that is both elegant and robust, demonstrating proficiency in {language}.",
+                    "Develop a high-quality {language} program to accomplish the given task. Prioritize readability, maintainability, and scalability in your code. Include detailed comments and documentation for clear comprehension. Optimize algorithms and data structures for efficiency. Conduct rigorous testing to ensure accuracy, considering edge cases and error handling. Strive for code that is both elegant and resilient, showcasing your proficiency in {language}.",
+                    "Write a {language} program that effectively fulfills the provided task. It is imperative that your code meets high-quality standards, including readability, maintainability, and scalability. Implement comprehensive comments and documentation to enhance understanding. Optimize algorithms and data structures for efficient performance. Thoroughly test your code for correctness, accounting for potential edge cases and exception handling. Aim for code that is both elegant and robust, demonstrating your proficiency in {language}.",
+                    "Compose a {language} program that not only achieves the assigned objective but also meets stringent quality standards. Emphasize readability, maintainability, and scalability in your code. Include thorough comments and documentation for clear comprehension. Optimize algorithms and data structures for efficiency. Conduct comprehensive testing to ensure correctness, taking into account edge cases and exception handling. Strive for code that is both elegant and resilient, showcasing your proficiency in {language}.",
+                    "Produce a {language} program that effectively addresses the given task while adhering to high-quality coding practices. Prioritize readability, maintainability, and scalability. Include detailed comments and documentation for better comprehension. Optimize algorithms and data structures for efficient performance. Rigorously test your code for accuracy, considering potential edge cases and handling exceptions gracefully. Aim for code that is both elegant and robust, demonstrating your proficiency in {language}.",
+                    "Create a {language} program that effectively accomplishes the provided task. Ensure that your code is of high quality, emphasizing readability, maintainability, and scalability. Incorporate comprehensive comments and documentation for better understanding. Optimize algorithms and data structures for efficiency. Rigorously test your code for correctness, taking into account potential edge cases and exception handling. Strive for code that is both elegant and resilient, showcasing your proficiency in {language}.",
+                    "Develop a {language} program that addresses the given task with a strong focus on code quality. Pay attention to readability, maintainability, and scalability. Incorporate thorough comments and documentation for clarity. Optimize algorithms and data structures for performance. Conduct comprehensive testing, including consideration of edge cases and error handling. Strive for code that is not only functional but also elegant and robust, highlighting your proficiency in {language}.",
+                    "Craft a {language} program that effectively tackles the assigned task. It is crucial that your code meets high standards of quality, including readability, maintainability, and scalability. Incorporate detailed comments and documentation for clear understanding. Optimize algorithms and data structures for efficient performance. Rigorously test your code for correctness, taking into consideration potential edge cases and handling exceptions gracefully. Aim for code that is both elegant and robust, showcasing your proficiency in {language}."]
+      - type: FstringTemplater
+        fstring:
+          - "{out_prompt}{solution} "
+        mapping:
+          out_prompt: ""
+
+  code_contests_reversed:
+    type: InstructionLMDataSource
+    data_path: code_contests/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: CodeContestsReader
+      processors:
+        - CodeContestsProcessor:
+            sol_cnt: 
+        - StripProcessor:
+            source_cols:
+              - description
+        - NormalizeCode:
+            source_col: solution
+        - BackticksLangs:
+            source_col: solution
+            language_col: language
+        - TokenCountInfo:
+            source_col: description
+        - TokenCountInfo:
+            source_col: solution
+        - SumTokenCountFilter:
+            source_cols:
+              - description
+              - solution
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        # - CacheProcessor:
+        #     name: "code_contests_reversed_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}\n{solution} [/INST] "
+          - "[INST] {solution}\n{prompt} [/INST] "
+        mapping:
+          prompt: ["Based on the code snippet provided, construct a detailed problem description inclusive of input specifications, expected output, constraints, and format guidelines. Use a mix of of narrative language and technical terms to make the task interesting while maintaining precision whilst avoiding unnecessary complexity.",
+                    "Derive a comprehensive problem statement from the given code, complete with input specifics, desired output, limitations, and data format specifications. Employ a blend of storytelling and technical terminology to captivate interest in the task, ensuring precision while steering clear of needless intricacies.",
+                    "Craft a thorough problem description, utilizing the provided code snippet as a guide. Ensure it encompasses input requirements, anticipated output, constraints, and data format instructions. Infuse a combination of narrative flair and technical jargon to add intrigue to the task, all while upholding precision and sidestepping unnecessary intricacies.",
+                    "From the provided code reference, generate a detailed problem scenario. This should encompass input particulars, desired output, any restrictions, and specifications for data format. Blend narrative elements with technical language to enhance the task's appeal, ensuring precision without delving into unnecessary complexities.",
+                    "Given the code snippet, formulate an extensive problem statement with specific input requirements, expected output, any constraints, and clear instructions for data format. Utilize a fusion of storytelling and technical lexicon to inject fascination into the task, all the while adhering to precision and steering away from superfluous intricacies.",
+                    "Use the provided code as a reference to create a detailed problem description. This should include input specifications, expected output, any restrictions, and guidelines for data format. ombine the art of storytelling with technical terminology to engage interest in the task, maintaining accuracy while avoiding unnecessary complications.",
+                    "Construct a problem scenario based on the provided code snippet. Ensure it encompasses comprehensive input details, expected output, constraints, and instructions for data format. Merge narrative nuances with technical expressions to make the task compelling, maintaining exactitude while steering clear of unnecessary intricacies.",
+                    "Generate a comprehensive problem description, referring to the provided code snippet. This should cover specific input requirements, expected output, any constraints, and format guidelines for data. Employ a synthesis of narrative elements and technical vocabulary to heighten interest in the task, ensuring precision while sidestepping unwarranted complexities.",
+                    "Based on the code reference provided, develop a comprehensive problem statement. This should specify input details, desired output, any limitations, and guidelines for data format. Integrate storytelling with technical language to add allure to the task, all the while upholding precision and eschewing unnecessary intricacies.",
+                    "Using the provided code as a foundation, compose a detailed problem description. Include specific input requirements, anticipated output, constraints, and clear instructions for data format. Inflect a combination of narrative eloquence and technical lexicon to inject intrigue into the task, preserving precision while avoiding gratuitous intricacies."]
+      - type: FstringTemplater
+        fstring:
+          - "{description} "
+        mapping:
+          out_prompt: ""
+
+  commit_pack:
+    type: InstructionLMDataSource 
+    weight: 10
+    data_path: commitpackft/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: CommitPackReader
+      processors:
+        - CommitPackProcessor
+        - StripProcessor:
+            source_cols:
+              - subject
+              - message
+        - NormalizeCode:
+            source_col: old_contents
+        - NormalizeCode:
+            source_col: new_contents
+        - BackticksLangs:
+            source_col: new_contents
+            language_col: split
+        - TokenCountInfo:
+            source_col: old_contents                
+            multithreaded: true
+        - TokenCountInfo:
+            source_col: new_contents                
+            multithreaded: true
+        - SumTokenCountFilter:
+            source_cols:
+              - old_contents
+              - new_contents
+            token_interval: [256, 16300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "commit_pack_train"
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] Here is a piece of code:\n{old_contents}\nProvide the code that would implement the following commit message:\n{subject}\nProvide a response solely in code. [/INST] "
+          - "[INST] Provide the code that would implement the following commit message:\n{subject}\nHere is the original code:\n{old_contents}\nShare your reply exclusively using code. [/INST] "
+          - "[INST] Show me the code for this task:\n{subject}\nYou'll find the initial code here:\n{old_contents}\nRespond using only code. [/INST] "
+          - "[INST] Give me the code to make this happen:\n{subject}\nThe original code is here:\n{old_contents}\nGive your answer in code only. [/INST] "
+          - "[INST] Please provide the code to do this:\n{subject}\nThe original code is shown here:\n{old_contents}\nConvey your response using code solely. [/INST] "
+          - "[INST] Provide the code needed to perform this task:\n{subject}\nThe initial code can be viewed below:\n{old_contents}\nOffer your reply using code exclusively. [/INST] "
+          - "[INST] Initial code:\n{old_contents}\nShow me the code for this task: \n{subject}\nShare your feedback with code only. [/INST] "
+          - "[INST] Original code:\n{old_contents}\nGive me the code to make this happen: \n{subject}\nExpress your thoughts using code exclusively. [/INST] "
+          - "[INST] The original code is shown below:\n{old_contents}\nPlease provide the code to do this: \n{subject}\nProvide your response using code solely. [/INST] "
+          - "[INST] Initial code can be viewed here:\n{old_contents}\nProvide the code needed to perform this task: \n{subject}\nConvey your answer through code only. [/INST] "
+
+      - type: FstringTemplater
+        fstring:
+          - "{out_prompt}{new_contents} "
+        mapping:
+          out_prompt: ""
+
+  oasst:
+    type: MultiTurnLMDataSource
+    data_path: oasst_v12/train_6q_updated
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: OAsstReader
+      processors:
+        - OAsstProcessor
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "oasst_train_updated"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}{user_messages} [/INST] "
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{out_prompt}{assistant_messages} "
+        mapping:
+          out_prompt: ""
+
+
+  unreal_scraped:
+    type: SimpleLMDataSource
+    data_path: unreal_scraped
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: CppReader
+          globbing_method: all
+          reformat_method: no_reformat
+      processors:
+        - CppProcessor
+        - NormalizeCode:
+            source_col: contents
+        - Backticks:
+            source_col: contents
+            language: cpp
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "unreal_scraped_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{contents} "
+
+  godot_scraped:
+    type: SimpleLMDataSource
+    data_path: godot_scraped
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: GodotReader
+          globbing_method: all
+          reformat_method: no_reformat
+      
+      processors:
+        - GodotProcessor
+        - NormalizeCode:
+            source_col: contents
+        - Backticks:
+            source_col: contents
+            language: gdscript
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "godot_scraped_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents} "
+        mapping:
+          prompt: ""
+
+  games_scraped:
+    type: SimpleLMDataSource
+    data_path: games_scraped
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: CsharpReader
+          globbing_method: all
+          reformat_method: no_reformat
+      processors:
+        - CsharpProcessor
+        - NormalizeCode:
+            source_col: contents
+        - Backticks:
+            source_col: contents
+            language: csharp
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "games_scraped_train"
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents}"
+        mapping:
+          prompt: ""
+
+  games:
+    type: SimpleLMDataSource
+    data_path: games
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: CsharpReader
+          globbing_method: libs_only
+          reformat_method: no_reformat
+      
+      processors:
+        - CsharpProcessor
+        - ShuffleProcessor
+        - NormalizeCode:
+            source_col: contents
+        - Backticks:
+            source_col: contents
+            language: csharp
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - CacheProcessor:
+            name: "games_train"
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents}"
+        mapping:
+          prompt: ""
+
+  github:
+    type: SimpleLMDataSource
+    data_path: recompose_unity_by_stars/github_100stars
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: GithubReader
+          globbing_method: all
+          reformat_method: no_reformat
+      
+      processors:
+        - GithubProcessor
+        - NormalizeCode:
+            source_col: contents
+        - BackticksLangs:
+            source_col: contents
+            language_col: language
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "github_100_train"
+    
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents} "
+        mapping:
+          prompt: ""
+
+  dolly:
+    type: InstructionLMDataSource
+    data_path: databricks_dolly/dolly15k
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: DollyReader
+      processors:
+        - DollyProcessor
+        - StripProcessor:
+            source_cols:
+              - context
+              - instruction
+              - response
+        - TokenCountInfo:
+            source_col: context                
+        - TokenCountInfo:
+            source_col: instruction
+        - TokenCountInfo:
+            source_col: response                
+        - SumTokenCountFilter:
+            source_cols:
+              - response
+              - instruction
+              - context
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "dolly_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {context} {instruction} [/INST] "
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{response} "
+
+  dolly_reversed:
+    type: InstructionLMDataSource
+    data_path: databricks_dolly/dolly15k
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: DollyReader
+      processors:
+        - DollyProcessor
+        - StripProcessor:
+            source_cols:
+              - context
+              - instruction
+              - response
+        - TokenCountInfo:
+            source_col: context                
+        - TokenCountInfo:
+            source_col: instruction
+        - TokenCountInfo:
+            source_col: response                
+        - SumTokenCountFilter:
+            source_cols:
+              - response
+              - instruction
+              - context
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "dolly_reversed_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}\n{response} [/INST]"
+          - "[INST] {response}\n{prompt} [/INST]"
+        mapping:
+          prompt: ["Craft a query or statement designed to elicit the given response, taking into account the context and desired information. Ensure the question is precise, pertinent, and appropriately constructed to garner a substantial and informative reply.",
+                    "Generate a question or prompt that is anticipated to elicit the provided response. Consider the context and the specific information you aim to gather. Ensure that the query is lucid, pertinent, and appropriately framed for a substantial and informative reply.",
+                    "Devise a query or prompt that is expected to prompt the provided response. Take into account the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately phrased to generate a meaningful and informative reply.",
+                    "Create a question or prompt that is likely to trigger the given response, considering the context and the specific information you intend to obtain. Make sure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                    "Construct a question or statement designed to provoke the provided response, considering the context and the kind of information you aim to extract. Ensure that the query is precise, relevant, and appropriately framed for a substantial and informative reply.",
+                    "Develop a query or prompt expected to draw out the provided response. Take into consideration the context and the specific information desired. Ensure the question is clear, relevant, and appropriately constructed for a meaningful and informative reply.",
+                    "Formulate a question or prompt that is likely to induce the provided response, considering the context and the type of information you want to elicit. Ensure that the question is clear, relevant, and appropriately framed to generate a meaningful and informative response.",
+                    "Create a question or prompt anticipated to generate the provided response. Take into account the context and the kind of information you're seeking. Ensure the question is clear, pertinent, and appropriately structured for a meaningful and informative reply.",
+                    "Generate a question or statement designed to extract the given response, considering the context and the specific information you intend to gather. Make sure the question is clear, relevant, and appropriately phrased for a substantial and informative reply.",
+                    "Devise a query or prompt that is expected to solicit the provided response. Take into consideration the context and the type of information sought. Ensure the question is clear, pertinent, and appropriately constructed for a meaningful and informative reply."]
+      - type: FstringTemplater
+        fstring:
+          - "{instruction} "
+          
+  github:
+    type: SimpleLMDataSource
+    data_path: recompose_unity_by_stars/github_50stars
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: GithubReader
+          globbing_method: all
+          reformat_method: no_reformat
+      
+      processors:
+        - GithubProcessor
+        - NormalizeCode:
+            source_col: contents
+        - BackticksLangs:
+            source_col: contents
+            language_col: language
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "github_50_train"
+        - ShuffleProcessor
+    
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents} "
+        mapping:
+          prompt: ""
+
+  redpj:
+    type: SimpleLMDataSource
+    data_path: red_pj/train10B
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: RedPJReader
+      
+      processors:
+        - RedPJProcessor
+        - TokenCountInfo:
+            source_col: raw_content
+        - SumTokenCountFilter:
+            source_cols:
+              - raw_content
+            token_interval: [256, 16_300]
+        - StripProcessor:
+            source_cols:
+              - raw_content
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "redpj10B"
+    
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{raw_content}"
+
+  hotpot:
+    type: InstructionLMDataSource
+    data_path: hotpot_qa/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: HotpotReader
+      processors:
+        - HotpotProcessor
+        - StripProcessor:
+            source_cols:
+              - question
+              - context
+              - answer
+        - TokenCountInfo:
+            source_col: question
+        - TokenCountInfo:
+            source_col: context
+        - TokenCountInfo:
+            source_col: answer                
+        - SumTokenCountFilter:
+            source_cols:
+              - question
+              - context
+              - answer
+            token_interval: [512, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "hotpot_qa_train"
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {context}\n{question} [/INST] "
+          - "[INST] {question}\n{context} [/INST] "
+      - type: FstringTemplater
+        fstring:
+          - "{answer} "
+
+  helpsteer:
+    type: InstructionLMDataSource
+    data_path: helpsteer/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: HelpSteerReader
+      
+      processors:
+        - HelpSteerProcessor
+        - StripProcessor:
+            source_cols:
+              - prompt
+              - response
+        - TokenCountInfo:
+            source_col: prompt
+        - TokenCountInfo:
+            source_col: response
+        - SumTokenCountFilter:
+            source_cols:
+              - prompt
+              - response
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "helpsteer_train"
+    templaters:
+    - type: FstringTemplater
+      fstring:
+        - "[INST] {prompt} [/INST] "
+    - type: FstringTemplater
+      fstring:
+        - "{response} "
+
+  unity_docs:
+    type: SimpleLMDataSource
+    data_path: unity_docs/scripting_md
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: UnityDocsReader
+      
+      processors:
+        - UnityDocsProcessor
+        - StripProcessor:
+            source_cols:
+              - contents
+        - TokenCountInfo:
+            source_col: contents
+            multithreaded: false
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "unity_docs_train"
+    
+    templaters:
+    - type: FstringTemplater
+      fstring:
+        - "{contents} "
+
+
+  stack_exchange:
+    type: SimpleLMDataSource
+    data_path: stackexchange/filtered
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: StackExReader
+      
+      processors:
+        - StackExProcessor
+        - StripProcessor:
+            source_cols:
+              - question
+              - answer
+        - TokenCountInfo:
+            source_col: question
+        - TokenCountInfo:
+            source_col: answer
+        - SumTokenCountFilter:
+            source_cols:
+              - question
+              - answer
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "stackexchange_train"
+    
+    templaters:
+    - type: FstringTemplater
+      fstring:
+        - "{question}\n{answer} "
+      mapping:
+        prompt: ""
+
+

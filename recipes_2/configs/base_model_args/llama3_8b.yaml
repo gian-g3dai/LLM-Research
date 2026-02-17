@@ -1,0 +1,7 @@
+model:
+  type: llama3
+  base: llama-3-8b-ckpt
+base_path: "/mnt/raid0/llamas/llama_base"
+tokenizer:
+  type: llama3
+  path: /mnt/raid0/llamas/llama3/Meta-Llama-3-8B-Instruct/tokenizer.model

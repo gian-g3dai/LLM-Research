@@ -1,0 +1,32 @@
+[
+  {
+    "infinite": false,
+    "multisample": false,
+    "dynamic_seq_len": true,
+    "max_length": 16384,
+    "max_tokens_as_prompt": 16384,
+    "no_truncate_next": true,
+    "datasources": [
+        {
+            "datasource_type": "InstructCodeDatasource",
+            "root": "/mnt/raid0/datasets/code_contests",
+            "percent_skip": 95,
+            "percent_use": 5,
+            "use_triple_backticks": true,
+            "solutions_per_problem": 1500,
+            "split": "test",
+            "reversed": true,
+            "metric_list": [
+              "perplexity"
+            ],
+            "prompt_template": {
+              "type": "InstructGenTemplate",
+              "base_prompt": "[INST] {instruction}\n{input} [/INST] ",
+              "kwargs": {
+                "instruction": "Using the provided code snippet as a reference, create a comprehensive problem description that includes necessary input details and expected output. Ensure that the problem is clearly defined, highlights any constraints, and specifies the format for input and output data. The problem description should be detailed enough for a user to understand and implement a solution."
+              }
+            }
+        }
+    ]
+  }
+]

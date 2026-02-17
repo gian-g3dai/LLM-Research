@@ -1,0 +1,492 @@
+dataset:
+  max_length: 32_768
+  multisample: true
+  dynamic_seq_len: false
+  infinite: true
+  no_truncate_next: true
+data_root: /mnt/raid0/datasets/
+datasource_weights:
+
+  platypus: 0
+  muffin: 5
+  # muffin_reversed: 10
+  code_contests: 10
+  commit_pack: 15
+  dolly: 30
+  oasst: 50
+  # unreal_scraped: 2.5
+  # godot_scraped: 2.5
+  # games_scraped: 10
+  # games: 10
+  # github:  50
+
+datasources:
+  platypus:
+    type: InstructionLMDataSource
+    data_path: platy/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: OpenPlatypusReader
+      processors:
+        - OpenPlatypusProcessor
+        - StripProcessor:
+            source_cols:
+              - instruction
+              - output
+        - TokenCountInfo:
+            source_col: output                
+        - TokenCountInfo:
+            source_col: instruction                
+        - SumTokenCountFilter:
+            source_cols:
+              - output
+              - instruction
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "platypus_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {instruction} [/INST] "
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{output} "
+
+  muffin:
+    type: InstructionLMDataSource
+    data_path: muffin/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: MuffinReader
+      processors:
+        - MuffinProcessor
+        - StripProcessor:
+            source_cols:
+              - instruction
+              - output
+        - TokenCountInfo:
+            source_col: output                
+        - TokenCountInfo:
+            source_col: instruction                
+        - SumTokenCountFilter:
+            source_cols:
+              - output
+              - instruction
+            token_interval: [512, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "muffin_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}\n{instruction} [/INST] "
+        mapping:
+          prompt: ["Respond to the following question or prompt with information firmly grounded in verified sources, avoiding speculation or subjective content. Ensure your answers are based on established facts accepted widely within relevant disciplines.",
+                    "Craft your response to the following question or prompt using information derived from well-verified sources. Steer clear of speculative or subjective content, and ensure your answers are firmly rooted in widely accepted facts across relevant disciplines.",
+                    "Provide a response to the given question or prompt rooted in verified information. Avoid speculative or subjective content, and ensure that your answers rely exclusively on well-verified facts accepted across pertinent disciplines.",
+                    "When responding to the following question or prompt, rely solely on information from well-verified sources. Refrain from speculative or subjective content, and ensure your answers are based on widely accepted facts within relevant disciplines.",
+                    "Generate a response to the provided question or prompt using information from reliable sources. Avoid speculative or subjective content, and ensure your answers are firmly based on widely accepted facts in relevant disciplines.",
+                    "Respond to the forthcoming question or prompt by drawing exclusively from well-verified information. Steer clear of speculative or subjective content, and ensure your answers are rooted in established facts accepted across pertinent disciplines.",
+                    "When addressing the following question or prompt, ensure your response is built on verified information. Avoid speculative or subjective content, and ensure your answers are firmly grounded in well-accepted facts within relevant disciplines.",
+                    "Provide a response to the upcoming question or prompt that is solely based on well-verified information. Avoid speculative or subjective content, and make sure your answers are firmly rooted in established facts widely accepted across pertinent disciplines.",
+                    "Respond to the forthcoming question or prompt using information from reputable sources. Avoid speculative or subjective content, and ensure your answers are firmly based on widely accepted facts in relevant disciplines.",
+                    "When generating your response to the following question or prompt, make sure it is based on information from verified sources. Steer clear of speculative or subjective content, and ensure your answers are firmly grounded in established facts accepted across pertinent disciplines."]
+      - type: FstringTemplater
+        fstring:
+          - "{output} "
+
+  # muffin reversed
+  muffin_reversed:
+    type: InstructionLMDataSource
+    data_path: muffin/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: MuffinReader
+      processors:
+        - MuffinProcessor
+        - TokenCountInfo:
+            source_col: output                
+        - TokenCountInfo:
+            source_col: instruction                
+        - SumTokenCountFilter:
+            source_cols:
+              - output
+              - instruction
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+          
+        # - CacheProcessor:
+        #     name: "muffin_reversed_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt} {output} [/INST]"
+          - "[INST] {output} {prompt} [/INST]"
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{instruction}"
+
+  code_contests:
+    type: InstructionLMDataSource
+    weight: 10
+    data_path: code_contests/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: CodeContestsReader
+      processors:
+        - CodeContestsProcessor
+        - StripProcessor:
+            source_cols:
+              - description
+        - NormalizeCode:
+            source_col: solution
+        - BackticksLangs:
+            source_col: solution
+            language_col: language
+        - TokenCountInfo:
+            source_col: description
+        - TokenCountInfo:
+            source_col: solution
+        - SumTokenCountFilter:
+            source_cols:
+              - description
+              - solution
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "code_contests_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}\n{description} [/INST] "
+        mapping:
+          prompt: ["Develop a {language} program that not only accomplishes the provided task efficiently but also adheres to industry best practices. Focus on writing clean, readable, and maintainable code. Ensure comprehensive commenting and documentation for clear understanding. Optimize algorithms and data structures for performance. Rigorously test the code for accuracy, considering potential edge cases and handling exceptions gracefully. Aim for code that exhibits both elegance and resilience, showcasing proficiency in {language}.",
+                    "Craft a {language} program that addresses the assigned task with an emphasis on code quality. Pay close attention to readability, maintainability, and scalability. Implement thorough comments and documentation to facilitate comprehension. Optimize algorithms and data structures for optimal performance. Conduct comprehensive testing, accounting for edge cases and error handling. Strive for code that is not only functional but also elegant and robust, showcasing your proficiency in {language}.",
+                    "In {language}, create a program that effectively addresses the provided task. It is crucial that your code is of high quality, adhering to best practices and industry standards. Focus on making it readable, maintainable, and scalable. Ensure that you incorporate comprehensive comments and documentation for better understanding. Optimize algorithms and data structures for efficiency. Rigorously test your code for correctness, considering potential edge cases and handling exceptions gracefully. Aim for code that is both elegant and robust, demonstrating proficiency in {language}.",
+                    "Develop a high-quality {language} program to accomplish the given task. Prioritize readability, maintainability, and scalability in your code. Include detailed comments and documentation for clear comprehension. Optimize algorithms and data structures for efficiency. Conduct rigorous testing to ensure accuracy, considering edge cases and error handling. Strive for code that is both elegant and resilient, showcasing your proficiency in {language}.",
+                    "Write a {language} program that effectively fulfills the provided task. It is imperative that your code meets high-quality standards, including readability, maintainability, and scalability. Implement comprehensive comments and documentation to enhance understanding. Optimize algorithms and data structures for efficient performance. Thoroughly test your code for correctness, accounting for potential edge cases and exception handling. Aim for code that is both elegant and robust, demonstrating your proficiency in {language}.",
+                    "Compose a {language} program that not only achieves the assigned objective but also meets stringent quality standards. Emphasize readability, maintainability, and scalability in your code. Include thorough comments and documentation for clear comprehension. Optimize algorithms and data structures for efficiency. Conduct comprehensive testing to ensure correctness, taking into account edge cases and exception handling. Strive for code that is both elegant and resilient, showcasing your proficiency in {language}.",
+                    "Produce a {language} program that effectively addresses the given task while adhering to high-quality coding practices. Prioritize readability, maintainability, and scalability. Include detailed comments and documentation for better comprehension. Optimize algorithms and data structures for efficient performance. Rigorously test your code for accuracy, considering potential edge cases and handling exceptions gracefully. Aim for code that is both elegant and robust, demonstrating your proficiency in {language}.",
+                    "Create a {language} program that effectively accomplishes the provided task. Ensure that your code is of high quality, emphasizing readability, maintainability, and scalability. Incorporate comprehensive comments and documentation for better understanding. Optimize algorithms and data structures for efficiency. Rigorously test your code for correctness, taking into account potential edge cases and exception handling. Strive for code that is both elegant and resilient, showcasing your proficiency in {language}.",
+                    "Develop a {language} program that addresses the given task with a strong focus on code quality. Pay attention to readability, maintainability, and scalability. Incorporate thorough comments and documentation for clarity. Optimize algorithms and data structures for performance. Conduct comprehensive testing, including consideration of edge cases and error handling. Strive for code that is not only functional but also elegant and robust, highlighting your proficiency in {language}.",
+                    "Craft a {language} program that effectively tackles the assigned task. It is crucial that your code meets high standards of quality, including readability, maintainability, and scalability. Incorporate detailed comments and documentation for clear understanding. Optimize algorithms and data structures for efficient performance. Rigorously test your code for correctness, taking into consideration potential edge cases and handling exceptions gracefully. Aim for code that is both elegant and robust, showcasing your proficiency in {language}."]
+      - type: FstringTemplater
+        fstring:
+          - "{out_prompt}{solution} "
+        mapping:
+          out_prompt: ""
+
+  commit_pack:
+    type: InstructionLMDataSource 
+    weight: 10
+    data_path: commitpackft/train
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: CommitPackReader
+      processors:
+        - CommitPackProcessor
+        - StripProcessor:
+            source_cols:
+              - subject
+              - message
+        - NormalizeCode:
+            source_col: old_contents
+        - NormalizeCode:
+            source_col: new_contents
+        - BackticksLangs:
+            source_col: new_contents
+            language_col: split
+        - TokenCountInfo:
+            source_col: old_contents                
+            multithreaded: true
+        - TokenCountInfo:
+            source_col: new_contents                
+            multithreaded: true
+        - SumTokenCountFilter:
+            source_cols:
+              - old_contents
+              - new_contents
+            token_interval: [256, 16300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "commit_pack_train"
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {old_contents}{prompt} {subject} [/INST] "
+          - "[INST] {subject} {prompt}{old_contents} [/INST] "
+          # here is a commit and the code . Apply the instruction.
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{out_prompt}{new_contents} "
+        mapping:
+          out_prompt: ""
+
+  oasst:
+    type: MultiTurnLMDataSource
+    data_path: oasst_v12/train_6q
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: OAsstReader
+      processors:
+        - OAsstProcessor
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "oasst_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}{user_messages} [/INST] "
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{out_prompt}{assistant_messages} "
+        mapping:
+          out_prompt: ""
+
+
+  unreal_scraped:
+    type: SimpleLMDataSource
+    data_path: unreal_scraped
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: CppReader
+          globbing_method: all
+          reformat_method: no_reformat
+      processors:
+        - CppProcessor
+        - NormalizeCode:
+            source_col: contents
+        - Backticks:
+            source_col: contents
+            language: cpp
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "unreal_scraped_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{contents} "
+
+  godot_scraped:
+    type: SimpleLMDataSource
+    data_path: godot_scraped
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: GodotReader
+          globbing_method: all
+          reformat_method: no_reformat
+      
+      processors:
+        - GodotProcessor
+        - NormalizeCode:
+            source_col: contents
+        - Backticks:
+            source_col: contents
+            language: gdscript
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "godot_scraped_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents} "
+        mapping:
+          prompt: ""
+
+  games_scraped:
+    type: SimpleLMDataSource
+    data_path: games_scraped
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: CsharpReader
+          globbing_method: all
+          reformat_method: no_reformat
+      processors:
+        - CsharpProcessor
+        - NormalizeCode:
+            source_col: contents
+        - Backticks:
+            source_col: contents
+            language: csharp
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "games_scraped_train"
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents}"
+        mapping:
+          prompt: ""
+
+  games:
+    type: SimpleLMDataSource
+    data_path: games
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: CsharpReader
+          globbing_method: libs_only
+          reformat_method: no_reformat
+      
+      processors:
+        - CsharpProcessor
+        - ShuffleProcessor
+        - NormalizeCode:
+            source_col: contents
+        - Backticks:
+            source_col: contents
+            language: csharp
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - CacheProcessor:
+            name: "games_train"
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents}"
+        mapping:
+          prompt: ""
+
+  github:
+    type: SimpleLMDataSource
+    data_path: recompose_unity_by_stars/github_100stars
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: GithubReader
+          globbing_method: all
+          reformat_method: no_reformat
+      
+      processors:
+        - GithubProcessor
+        - NormalizeCode:
+            source_col: contents
+        - BackticksLangs:
+            source_col: contents
+            language_col: language
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "github_100_train"
+    
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents} "
+        mapping:
+          prompt: ""
+
+  dolly:
+    type: InstructionLMDataSource
+    data_path: databricks_dolly/dolly15k
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: DollyReader
+      processors:
+        - DollyProcessor
+        - StripProcessor:
+            source_cols:
+              - context
+              - instruction
+              - response
+        - TokenCountInfo:
+            source_col: context                
+        - TokenCountInfo:
+            source_col: instruction
+        - TokenCountInfo:
+            source_col: response                
+        - SumTokenCountFilter:
+            source_cols:
+              - response
+              - instruction
+              - context
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "dolly_train"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {context} {instruction} [/INST] "
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{response} "
+
+
+  
+          
+
+

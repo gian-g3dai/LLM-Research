@@ -1,0 +1,7 @@
+model:
+  type: llama
+  base: code-llama-13b-instruct
+base_path: "/mnt/raid0/llamas/llama_base"
+tokenizer:
+  type: llama
+  path: /mnt/raid0/llamas/codellama/CodeLlama-7b-Instruct/tokenizer.model

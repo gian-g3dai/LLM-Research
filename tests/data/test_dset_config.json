@@ -1,0 +1,36 @@
+{
+    "max_length": 1024,
+    "max_tokens_as_prompt": 200,
+    "recycle_prompt": "Here is a piece of code or text. Please continue it with your own code or text.",
+    "recycle_prompt_template": {
+        "type": "LlamaTemplate",
+        "base_prompt": "<<SYS>>\n{sys}\n<</SYS>>\n\n[INST]{instruction}[/INST]",
+        "kwargs": {
+            "sys": "DEFAULT SYSTEM PROMPT"
+        }
+    },
+    "datasources": [
+        {
+            "datasource_type": "CSharpFilesDatasource",
+            "root": "/home/ted/datasets/games_scraped",
+            "prompt_template": {
+                "type": "CodeCompletionTemplate",
+                "base_prompt": "<<SYS>>\n{sys}\n<</SYS>>\n\n[INST]{instruction}[/INST]",
+                "kwargs": {
+                    "sys": "DEFAULT SYSTEM PROMPT"
+                }
+            }
+        },
+        {
+            "datasource_type": "CSharpFilesDatasource",
+            "root": "/home/ted/datasets/games",
+            "prompt_template": {
+                "type": "CodeCompletionTemplate",
+                "base_prompt": "<<SYS>>\n{sys}\n<</SYS>>\n\n[INST]{instruction}[/INST]",
+                "kwargs": {
+                    "sys": "DEFAULT SYSTEM PROMPT"
+                }
+            }
+        }
+    ]
+}

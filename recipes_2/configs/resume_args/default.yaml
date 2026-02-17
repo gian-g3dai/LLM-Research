@@ -1,0 +1,3 @@
+resume_checkpoint: "checkpoint_172"
+resume_experiment_root: "/mnt/raid0/checkpoints/llama3_dummy/"
+weights_only: True

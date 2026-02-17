@@ -1,0 +1,81 @@
+[
+  {
+    "infinite": false,
+    "multisample": false,
+    "dynamic_seq_len": true,
+    "max_length": 16384,
+    "max_tokens_as_prompt": 0,
+    "no_truncate_next": true,
+    "datasources": [
+      {
+        "datasource_type": "MultiTurnOasstDatasource",
+        "root": "/mnt/raid0/datasets/multi_oasst",
+        "percent_skip": 80,
+        "percent_use": 20,
+        "split": "validation",
+        "metric_list": [
+          "perplexity"
+        ],
+        "prompter_template": {
+          "type": "MultiTurnTemplate",
+          "base_prompt": "[INST] {turn_text} [/INST] ",
+          "kwargs": {
+          }
+        },
+        "assistant_template": {
+          "type": "MultiTurnTemplate",
+          "base_prompt": "{turn_text}",
+          "kwargs": {
+          }
+        }
+      }
+    ]
+  },
+  {
+    "infinite": false,
+    "multisample": false,
+    "dynamic_seq_len": true,
+    "max_length": 8192,
+    "max_tokens_as_prompt": 0,
+    "datasources": [
+        {
+            "datasource_type": "CSharpFilesDatasource",
+            "root": "/mnt/raid0/datasets/games",
+            "percent_skip": 0,
+            "percent_use": 100,
+            "metric_list": [
+              "perplexity"
+            ],
+            "use_triple_backticks": true,
+            "reformat_method": "reformat",
+            "globbing_method": "user_only"  
+        }
+    ]
+  },
+  {
+    "infinite": false,
+    "multisample": false,
+    "dynamic_seq_len": true,
+    "max_length": 8192,
+    "max_tokens_as_prompt": 0,
+    "datasources": [
+      {
+        "datasource_type": "PromptCodeDatasource",
+        "root": "/mnt/raid0/datasets/no_game",
+        "percent_skip": 0,
+        "percent_use": 100,
+        "metric_list": [
+          "perplexity"
+        ],
+        "use_triple_backticks": true,
+        "reformat_method": "reformat",
+        "prompt_template": {
+          "type": "LlamaTemplate",
+          "base_prompt": "[INST] You are a Unity programming assistant. Developers give you a task instruction that requires you to create a script. You will respond with the code that you think is the most appropriate for the task. You will only output the code inside a triple backtick block. You won't provide explanations for the code. At most you can add comments to the code. {instruction}. Please respond only with the code that implements this functionality. [/INST] ",
+          "kwargs": {
+          }
+        }
+      }
+    ]
+  }
+]

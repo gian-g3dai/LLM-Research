@@ -1,0 +1,31 @@
+{
+  "max_length": 16384,
+  "max_tokens_as_prompt": 16384,
+  "infinite": true,
+  "multisample": true,
+  "no_truncate_next": true,
+  "datasources": [
+    {
+      "datasource_type": "MultiTurnOasstDatasource",
+      "root": "/mnt/raid0/datasets/multi_oasst",
+      "percent_skip": 0,
+      "percent_use": 100,
+      "split": "train",
+      "metric_list": [
+        "perplexity"
+      ],
+      "prompter_template": {
+        "type": "MultiTurnTemplate",
+        "base_prompt": "[INST] {turn_text} [/INST] ",
+        "kwargs": {
+        }
+      },
+      "assistant_template": {
+        "type": "MultiTurnTemplate",
+        "base_prompt": "{turn_text}",
+        "kwargs": {
+        }
+      }
+    }
+  ]
+}

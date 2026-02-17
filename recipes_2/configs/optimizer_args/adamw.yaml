@@ -1,0 +1,19 @@
+algo: "AdamW"
+parameter_groups:
+  - lr: 5e-5
+    weight_decay: 0.1
+    included_params: ["w1", "w2", "w3", "wq", "wk", "wo", "wv"]
+  
+  - lr: 5e-5
+    included_params: ["norm"]
+
+  # - lr: 3e-7
+  #   included_params: ["tok_embedding"]
+
+  # - lr: 3e-7
+  #   weight_decay: 0.1
+  #   included_params: ["output"]
+
+  # - lr: 0.005
+  #   weight_decay: 0.1
+    # included_params: ["wq", "wk", "wo", "wv"]

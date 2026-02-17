@@ -1,0 +1,3 @@
+base_cache_path: /mnt/raid0/datasets/tmp_cache
+train_config: /home/fsuser/workdir/ncs/ml-research/recipes_2/configs/datasets/dataset_pretrain_fr.yaml
+test_config: /home/fsuser/workdir/ncs/ml-research/recipes_2/configs/datasets/dataset_test.yaml

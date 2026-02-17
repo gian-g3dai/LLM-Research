@@ -1,0 +1,135 @@
+dataset:
+  max_length: 32_768
+  multisample: true # true
+  dynamic_seq_len: false # false
+  infinite: false
+  no_truncate_next: true
+data_root: /mnt/raid0/datasets/
+datasource_weights:
+  games: 10
+  oasst: 10
+  helpsteer: 10
+  gian_test: 10
+
+datasources:
+  games:
+    type: SimpleLMDataSource
+    data_path: games
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: CsharpReader
+          globbing_method: user_only
+          reformat_method: no_reformat
+      
+      processors:
+        - CsharpProcessor
+        - ShuffleProcessor
+        - NormalizeCode:
+            source_col: contents
+        - Backticks:
+            source_col: contents
+            language: csharp
+        - TokenCountInfo:
+            source_col: contents
+        - SumTokenCountFilter:
+            source_cols:
+              - contents
+            token_interval: [256, 16_300]
+        - CacheProcessor:
+            name: "games_test"
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "{prompt}{contents}"
+        mapping:
+          prompt: ""
+  
+  
+  oasst:
+    type: MultiTurnLMDataSource
+    data_path: oasst_v12/validation_6q
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: OAsstReader
+      processors:
+        - OAsstProcessor
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "oasst_test"
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}{user_messages} [/INST] "
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{out_prompt}{assistant_messages} "
+        mapping:
+          out_prompt: ""
+  
+  helpsteer:
+    type: InstructionLMDataSource
+    data_path: helpsteer/validation
+    percent_interval: [90, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: 
+          type: HelpSteerReader
+      
+      processors:
+        - HelpSteerProcessor
+        - StripProcessor:
+            source_cols:
+              - prompt
+              - response
+        - TokenCountInfo:
+            source_col: prompt
+        - TokenCountInfo:
+            source_col: response
+        - SumTokenCountFilter:
+            source_cols:
+              - prompt
+              - response
+            token_interval: [32, 16_300]
+        - ShuffleProcessor
+        - CacheProcessor:
+            name: "helpsteer_test"
+    templaters:
+    - type: FstringTemplater
+      fstring:
+        - "[INST] {prompt} [/INST] "
+    - type: FstringTemplater
+      fstring:
+        - "{response} "
+
+  gian_test:
+    type: MultiTurnLMDataSource
+    data_path: gian/test
+    percent_interval: [0, 100]
+    metric_list:
+      - perplexity
+    pipeline:
+      reader: OAsstReader
+      processors:
+        - OAsstProcessor
+        - ShuffleProcessor
+
+    templaters:
+      - type: FstringTemplater
+        fstring:
+          - "[INST] {prompt}{user_messages} [/INST] "
+        mapping:
+          prompt: ""
+      - type: FstringTemplater
+        fstring:
+          - "{out_prompt}{assistant_messages} "
+        mapping:
+          out_prompt: ""

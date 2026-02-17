@@ -1,0 +1,11 @@
+{
+  "type": "AnyPrecisionAdamW",
+  "params": {
+    "lr": 1e-4,
+    "betas": [0.9, 0.95],
+    "eps": 1e-08,
+    "weight_decay": 0.01,
+    "use_kahan_summation": true,
+    "momentum_dtype": "bfloat16"
+  }
+}

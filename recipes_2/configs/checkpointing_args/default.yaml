@@ -1,0 +1,5 @@
+save_dir: "/mnt/raid0/checkpoints"
+run_name: "llama3_improved"
+save_every_n_steps: 16
+format: "pt"
+async_save: False
